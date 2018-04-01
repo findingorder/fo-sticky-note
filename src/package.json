@@ -1,13 +1,14 @@
 {
-  "name": "fo-markdown-note",
+  "name": "fo-sticky-note",
   "version": "1.0.0",
   "description": "",
-  "main": "fo-markdown-note.js",
+  "main": "fo-sticky-note.js",
   "directories": {
     "lib": "lib"
   },
   "dependencies": {
-    "simplemde": "^1.11.2"
+    "fo-markdown-note": "^1.0.5",
+    "vue-resize": "^0.4.4"
   },
   "devDependencies": {
     "jquery": "^3.3.1",
@@ -19,9 +20,9 @@
     "rollup-plugin-postcss": "^1.4.0",
     "vue": "^2.5.16"
   },
-  "repository" : {
+  "repository": {
     "type": "git",
-    "url": "https://github.com/findingorder/fo-markdown-note"
+    "url": "https://github.com/findingorder/fo-sticky-note"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

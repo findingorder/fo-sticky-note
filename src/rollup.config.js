@@ -4,9 +4,9 @@ import commonjs from 'rollup-plugin-commonjs'
 import postcss  from 'rollup-plugin-postcss'
 
 export default {
-    input: 'fo-markdown-note.js',
+    input: 'fo-sticky-note.js',
     output: {
-        file: '../dist/fo-markdown-note-bundle.js',
+        file: '../dist/fo-sticky-note-bundle.js',
         format: 'es'
     },
     plugins: [ 

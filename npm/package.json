@@ -1,8 +1,8 @@
 {
-  "name": "fo-markdown-note",
+  "name": "fo-sticky-note",
   "version": "1.0.0",
   "description": "",
-  "main": "fo-markdown-note-bundle.js",
+  "main": "fo-sticky-note-bundle.js",
   "dependencies": {
     "jquery": "^3.3.1",
     "jqueryui": "^1.11.1",
@@ -11,7 +11,7 @@
   },
   "repository" : {
     "type": "git",
-    "url": "https://github.com/findingorder/fo-markdown-note"
+    "url": "https://github.com/findingorder/fo-sticky-note"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

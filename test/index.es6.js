@@ -1,12 +1,12 @@
 // console.info('index.es6.js: Start')
 
 // Uses a symlink to the ../dist directory.
-import FoMarkdownNote from './dist/fo-markdown-note-bundle.js'
+import FoStickyNote from './dist/fo-sticky-note-bundle.js'
 
 var vueModel = new Vue({
     el: '#app',
     components: {
-        FoMarkdownNote
+        FoStickyNote
     }
 })
 
