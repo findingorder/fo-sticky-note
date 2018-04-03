@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "fo-markdown-note": "^1.0.5",
+    "fo-markdown-note": "^1.0.6",
     "vue-resize": "^0.4.4"
   },
   "devDependencies": {

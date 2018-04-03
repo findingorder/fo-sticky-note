@@ -41,7 +41,8 @@
 
 It exactly fills out a 70-space line if you put a period at the end." 
                             background-color="LemonChiffon"
-                            v-on:change="noteOnChange()">
+                            v-on:note-change="handleNoteChange($event)"
+                            v-on:title-change="handleTitleChange($event)">
                         </fo-sticky-note>
                     </div>
                 </div>

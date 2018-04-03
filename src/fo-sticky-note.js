@@ -2,9 +2,10 @@
 
 // PUNCH LIST
 // DONE: Add line height attribute to fo-markdown-note and fo-sticky-note.
+// DONE: Use autokey to run Ctrl-S, Shift-Ctrl-B, Ctrl-J combination
+// DONE: Make title editable.
+// DONE: Emit note change and title change events.
 // --------------------------------------------------------------------------------
-// TODO: Use autokey to run Ctrl-S, Shift-Ctrl-B, Ctrl-J combination
-// TODO: Make title editable.
 // TODO: Use ems instead of pixels everywhere.
 // TODO: Close button
 // TODO: Menu button and drop-down menu; drop-down menu should be fully configurable
@@ -95,17 +96,20 @@ export default {
                     v-bind:color='color'
                     v-bind:line-height='lineHeight'
                     v-bind:font-family='fontFamily'
-                    v-bind:font-size='fontSize'>
+                    v-bind:font-size='fontSize'
+                    v-on:note-change='noteOnChange($event)'>
                 </fo-markdown-note>
             </div>
 
             <textarea 
                 :id='titleInputId' 
-                class='title-textarea' 
-                ref='titleTextarea' 
                 :title='noteTitle' 
+
+                class='title-textarea' 
                 placeholder='Title' 
+                ref='titleTextarea' 
                 rows='1'
+
                 v-on:blur='titleInputOnBlur'
                 v-on:keydown='titleInputOnKeyDown'
                 v-model='noteTitle' 
@@ -169,7 +173,26 @@ export default {
         // console.info('fo-sticky-note.es6.js: mounted(): End')
     },
 
+    watch: {
+        // note: function (newNote, oldNote) {
+        //     console.info('fo-sticky-note.js: watch: note: Fired! newNote = ' + newNote)
+        // },
+        noteTitle: function (newNoteTitle, oldNoteTitle) {
+            console.info('fo-sticky-note.js: watch: noteTitle: Fired! newNoteTitle = ' + newNoteTitle)
+            this.$emit('title-change', newNoteTitle)
+        }
+    },
+
     methods: {
+        noteOnChange(newNote) {
+            console.info('fo-sticky-note.js: noteOnChange(): Fired!')
+            
+            this.note = newNote
+            console.info('fo-sticky-note.js: noteOnChange(): this.note =')
+            console.info(this.note)
+
+            this.$emit('note-change', this.note)
+        },
 
         initializeColors() {
             // console.info('fo-sticky-note.js: initializeColors(): this.backgroundColor = ' + this.backgroundColor)
@@ -304,34 +327,6 @@ export default {
 
             this.titleInput.style.height = titleHeight
 
-        },
-
-        setTextareaHeight(ta, height) {
-            // Sets the outer height of a textarea control, taking into consideration its padding.
-
-            // console.info('fo-sticky-note.js: setTextareaSize(): height = ' + height)
-            // console.info('fo-sticky-note.js: setTextareaSize(): width = ' + width)
-
-            // let taPaddingTop = parseInt(ta.style.paddingTop)
-            // console.info('fo-sticky-note.js: setTextareaSize(): taPaddingTop = ' + taPaddingTop)
-            // let taPaddingBottom = parseInt(ta.style.paddingBottom)
-            // console.info('fo-sticky-note.js: setTextareaSize(): taPaddingBottom = ' + taPaddingBottom)
-            // let taPaddingLeft = parseInt(ta.style.paddingLeft)
-            // console.info('fo-sticky-note.js: setTextareaSize(): taPaddingLeft = ' + taPaddingLeft)
-            // let taPaddingRight = parseInt(ta.style.paddingRight)
-            // console.info('fo-sticky-note.js: setTextareaSize(): taPaddingRight = ' + taPaddingRight)
-
-            // let desiredHeight = height - taPaddingTop  - taPaddingBottom
-            // let desiredWidth  = width  - taPaddingLeft - taPaddingRight
-
-            // console.info('fo-sticky-note.js: setTextareaSize(): desiredHeight = ' + desiredHeight)
-
-            // ta.style.height   = desiredHeight + 'px'
-            // ta.style.minWidth = desiredWidth + 'px'
-            // ta.style.maxWidth = desiredWidth + 'px'
-            // ta.style.width    = desiredWidth + 'px'
-
-            // // TODO: CONTINUE HERE
         },
 
         stickyNoteOnBlur(e) {

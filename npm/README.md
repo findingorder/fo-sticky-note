@@ -1,9 +1,10 @@
 # fo-sticky-note Component for Vue.js
 
-**fo-sticky-note** is a **Vue.js** component that provides...
+THIS COMPONENT IS UNDER CONSTRUCTION. PLEASE DO NOT USE.
 
+**fo-sticky-note** is a **Vue.js** component that provides a full-featured sticky note control.
 
-fo-markdown note is written in **ECMAScript 6th Edition** (a.k.a. **ECMAScript 2015**, a.k.a. **ES6**) and is intended for inclusion in an ES6 application.  No provision has been made for supporting earlier JavaScript editions.
+fo-sticky-note is written in **ECMAScript 6th Edition** (a.k.a. **ECMAScript 2015**, a.k.a. **ES6**) and is intended for inclusion in an ES6 application.  No provision has been made for supporting earlier JavaScript editions.
 
 fo-sticky-note is provided as an **ES6 module**. No provision has been made for older idiosyncratic module formats such as CommonJS or AMD.
 
@@ -125,13 +126,3 @@ import FoMarkdownNote from 'node_modules/fo-sticky-note/fo-sticky-note-bundle.js
 ```
 
 In this scenario, **fo-sticky-note-bundle.js** will contain all of the bundled dependencies, and the external dependencies will be made known to NPM in the **npm/package.json** file.  This **package.json** file is different from the one found in the **src** directory, and is used only for publishing on NPM.  
-
-## Acknowledgements
-
-Like most open source projects, fo-sticky-note is based on the work of others. 
-
-...
-
-- [rollup.js](https://rollupjs.org) by [Rich Harris](https://github.com/Rich-Harris), [Lukas Taegert](https://github.com/lukastaegert), and a host of [other contributors](https://github.com/rollup/rollup/graphs/contributors)
-
-We also gratefully acknowledge the [JQuery](https://jquery.com/) and [Lodash](https://lodash.com/) projects on which so much the web is built, and the [gridstack.js](http://gridstackjs.com/) component used in our test application.
