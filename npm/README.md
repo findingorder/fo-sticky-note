@@ -1,7 +1,5 @@
 # fo-sticky-note Component for Vue.js
 
-THIS COMPONENT IS UNDER CONSTRUCTION. PLEASE DO NOT USE.
-
 **fo-sticky-note** is a **Vue.js** component that provides a full-featured sticky note control.
 
 fo-sticky-note is written in **ECMAScript 6th Edition** (a.k.a. **ECMAScript 2015**, a.k.a. **ES6**) and is intended for inclusion in an ES6 application.  No provision has been made for supporting earlier JavaScript editions.
@@ -37,17 +35,25 @@ The following attributes can be included in an *\<fo-sticky-note\>* tag:
 
 - *id*&nbsp;&nbsp;&nbsp;Required; every *\<fo-sticky-note\>* instance must have a unique *id* value
 - *note*&nbsp;&nbsp;&nbsp;The initial contents of the note
+- *noteTitle*&nbsp;&nbsp;&nbsp;The note's title; this text appears in the shaded bar at the top of the note
 
 Values for the following attributes are expressed using **CSS** syntax:
 
-- *bgcolor*&nbsp;&nbsp;&nbsp;The markdown note's background color
-- *color*&nbsp;&nbsp;&nbsp;The note's text color
-- *fontFamily*&nbsp;&nbsp;&nbsp;The typeface to use
-- *fontSize*&nbsp;&nbsp;&nbsp;How big you want the type to be
+- *background-color*&nbsp;&nbsp;&nbsp;The note's background color
+- *font-family*&nbsp;&nbsp;&nbsp;The typeface to use
+- *font-size*&nbsp;&nbsp;&nbsp;How big you want the type to be
+- *line-height*&nbsp;&nbsp;&nbsp;The amount of spacing between lines of text
+- *menu-is-pinned*&nbsp;&nbsp;&nbsp;Use to keep the menu and the color button in selected mode while a color picker is displayed
 
 ### Events
 
-*on-change* ...
+- *blur*&nbsp;&nbsp;&nbsp;Emitted when the sticky note loses focus
+- *close-button-click*&nbsp;&nbsp;&nbsp;Emitted when the close button is clicked
+- *color-button-click*&nbsp;&nbsp;&nbsp;Emitted when the color button is clicked
+- *color-button-unclick*&nbsp;&nbsp;&nbsp;Emitted when the color button is clicked while the menu is pinned
+- *menu-on-mouse-leave*&nbsp;&nbsp;&nbsp;Emitted when the mouse pointer leaves the region of the menu
+- *note-change*&nbsp;&nbsp;&nbsp;Emitted when the note text changes
+- *title-change*&nbsp;&nbsp;&nbsp;Emitted when the title text changes
 
 ### Example
 
@@ -55,8 +61,8 @@ Values for the following attributes are expressed using **CSS** syntax:
 <fo-sticky-note 
     id="note1"                    
     note="Remember to do what I forgot to do."
-    bgcolor="LemonChiffon"
-    v-on:change="noteOnChange()">
+    background-color="LemonChiffon"
+    v-on:note-change="noteOnChange()">
 </fo-sticky-note>
 ```
 
@@ -126,3 +132,18 @@ import FoMarkdownNote from 'node_modules/fo-sticky-note/fo-sticky-note-bundle.js
 ```
 
 In this scenario, **fo-sticky-note-bundle.js** will contain all of the bundled dependencies, and the external dependencies will be made known to NPM in the **npm/package.json** file.  This **package.json** file is different from the one found in the **src** directory, and is used only for publishing on NPM.  
+
+## Acknowledgements
+
+Like most open source projects, fo-sticky-note is based on the work of others.
+
+- [Vue.js](https://vuejs.org/) by [Evan You](https://github.com/yyx990803) and a host of [other contributors](https://vuejs.org/v2/guide/team.html)
+- [rollup.js](https://rollupjs.org) by [Rich Harris](https://github.com/Rich-Harris), [Lukas Taegert](https://github.com/lukastaegert), and a host of [other contributors](https://github.com/rollup/rollup/graphs/contributors)
+- [vue-resize](https://github.com/Akryum/vue-resize) by [Guillaume Chau](https://guillaume-chau.info/)
+- [jquery-autogrow-textarea](https://www.npmjs.com/package/jquery-autogrow-textarea) by [Bruno Sampaio](https://www.npmjs.com/~bensampaio)
+- [tinycolor](http://bgrins.github.io/TinyColor/) by [Brian Grinstead](https://briangrinstead.com/blog/) and many [other contributors](https://github.com/bgrins/TinyColor/graphs/contributors)
+- [vue-color](https://xiaokaike.github.io/vue-color/) by [Don/xiaokaike](https://github.com/xiaokaike) and many [other contributors](https://github.com/xiaokaike/vue-color/graphs/contributors) for the color picker used in the test application
+- [gridstack.js](http://gridstackjs.com/) by [numerous contributors](https://github.com/gridstack/gridstack.js/graphs/contributors) is used in our test application
+- Other code snippets from various web forums and articles. If you see some of your code and want to let me know who you are, I'll add you individually to this list.
+
+We also gratefully acknowledge the [JQuery](https://jquery.com/) and [Lodash](https://lodash.com/) projects on which so much the web is built.

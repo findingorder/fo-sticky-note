@@ -1,3 +1,11 @@
+#!/usr/bin/env bash
+
+# Merge the template into the main JavaScript file.
+
+node ./merge-template.js ./fo-sticky-note.js ./fo-sticky-note-template.html 
+
+# Build the bundle.
+
 rollup -c
 
 # Go ahead and copy the files that will be published on npm to the npm directory.

@@ -1,0 +1,78 @@
+<div :id='id' 
+    class='outer-div' 
+    ref='outerDiv'>
+
+    <div 
+        :id='titleDivId' 
+        ref='titleDiv'
+        class='title-div' 
+        :title='noteTitle' 
+        v-on:click='titleDivOnClick'
+        >{{noteTitle}}</div>
+
+    <div :id='menuOuterDivId'
+        ref='menuOuterDiv'
+        v-on:mouseenter='menuOnMouseEnter'
+        v-on:mouseleave='menuOnMouseLeave'>
+
+        <div :id='menuDivId' 
+            ref='menuDiv'
+            style='background-color: "red";'>
+
+            <div :id='colorButtonId' ref='colorButton'                        
+                v-on:mouseenter='colorOnMouseEnter'
+                v-on:mouseleave='colorOnMouseLeave'
+                v-on:click='colorButtonOnClick'>
+
+                <img :id='colorButtonIconId' ref='colorButtonIcon'/>
+            </div>
+            <div :id='closeButtonId' ref='closeButton'
+                v-on:mouseenter='closeOnMouseEnter'
+                v-on:mouseleave='closeOnMouseLeave'
+                v-on:click='closeButtonOnClick'>
+
+                <img :id='closeButtonIconId' ref='closeButtonIcon'/>
+            </div>
+        </div>
+
+        <div :id='menuButtonId' 
+            ref='menuButton'
+            v-on:click='menuButtonOnClick'>
+        
+            <img :id='menuButtonIconId' ref='menuButtonIcon'/>
+        </div>
+        
+    </div>
+
+    <div :id='markdownDivId' class='markdown-div' ref='markdownDiv'>
+        <fo-markdown-note 
+            :id='foMarkdownNoteId'
+            v-bind:note='note' 
+            v-bind:background-color='backgroundColor'
+            v-bind:color='color'
+            v-bind:line-height='lineHeight'
+            v-bind:font-family='fontFamily'
+            v-bind:font-size='fontSize'
+            v-on:click='noteOnClick($event)'
+            v-on:note-change='noteOnChange($event)'>
+        </fo-markdown-note>
+    </div>
+
+    <textarea 
+        :id='titleInputId' 
+        :title='noteTitle' 
+
+        class='title-textarea' 
+        placeholder='Title' 
+        ref='titleTextarea' 
+        rows='1'
+
+        v-on:blur='titleInputOnBlur'
+        v-on:keydown='titleInputOnKeyDown'
+        v-model='noteTitle' 
+        style='visibility: hidden;'
+        ref='titleInput'>
+    ></textarea>
+
+    <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' />
+</div>

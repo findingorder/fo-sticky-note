@@ -15,3 +15,15 @@
 h1, h2, h3, h4, h5 {
     margin-top: 0;
 }
+
+.vc-swatches {
+    width: 470px !important;
+    height: 350px !important;
+    overflow: hidden !important;
+    z-index: 100;
+}
+.vc-swatches-box {
+    width: 450px;
+}
+
+

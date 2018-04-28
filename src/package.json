@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "dependencies": {
-    "fo-markdown-note": "^1.0.6",
+    "fo-markdown-note": "^1.0.9",
     "vue-resize": "^0.4.4"
   },
   "devDependencies": {
@@ -18,6 +18,8 @@
     "rollup-plugin-ignore": "^1.0.3",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-postcss": "^1.4.0",
+    "rollup-plugin-svg": "^1.0.1",
+    "rollup-plugin-vue": "^3.0.0",
     "vue": "^2.5.16"
   },
   "repository": {

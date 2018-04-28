@@ -16288,6 +16288,44 @@ var foMarkdownNote = {
         // console.info('fo-markdown-note.es6.js: mounted(): End')
     },
 
+    watch: {
+        backgroundColor: function(newValue, oldValue) {
+            console.info('fo-markdown-note.js: watch: backgroundColor: Fired! newValue = ' + newValue);
+            let cmds = this.codeMirrorDiv.style;
+                cmds.backgroundColor = this.backgroundColor;                    
+
+            let pes = this.previewElement.style;
+                pes.backgroundColor = this.backgroundColor;
+
+        },
+        color: function(newValue, oldValue) {
+            console.info('fo-markdown-note.js: watch: color: Fired! newValue = ' + newValue);
+            let cmds = this.codeMirrorDiv.style;
+                cmds.color = this.color;
+
+            let pes = this.previewElement.style;
+                pes.color = this.color;
+
+            this.setCursorColor();
+        },
+        fontFamily: function(newValue, oldValue) {
+            let cmds = this.codeMirrorDiv.style;
+                cmds.fontFamily = this.fontFamily;
+        },
+        fontSize: function(newValue, oldValue) {
+            let cmds = this.codeMirrorDiv.style;
+                cmds.fontSize = this.fontSize;
+            let ods = this.vueOuterDiv.style;
+                ods.fontSize = this.fontSize;
+        },
+        lineHeight: function(newValue, oldValue) {
+            let cmls = this.codeMirrorLines.style;
+                cmls.lineHeight = this.lineHeight;
+            let pes = this.previewElement.style;
+                pes.lineHeight = this.lineHeight;
+        }
+    },
+
     methods: {
         changeHyperlinkTargets() {
             // Check to see if there are any hyperlinks on the preview div or its descendents.
@@ -16366,11 +16404,6 @@ var foMarkdownNote = {
             // console.info("fo-markdown-note: enterPreviewMode(): End")
         },
 
-        // getCursorPosition() {
-        //     let cursor = this.simplemde.codemirror.getCursor()                
-        //     this.cursorPosition = { line: cursor.line, ch: cursor.ch }
-        // },
-
         initializeCodeMirrorDivIfNecessary() {
             if (!this.codeMirrorDiv) {
                 this.codeMirrorDiv = this.vueOuterDiv.getElementsByClassName('CodeMirror')[0];
@@ -16415,19 +16448,6 @@ var foMarkdownNote = {
                     pes.lineHeight = this.lineHeight;
             }
         },
-
-        // initializeResizeObserver() {
-        //     let resizeObserver = document.getElementById('outer-div-resize-observer')
-        //     resizeObserver.style.position = 'relative'
-        // },
-
-        // outerDivOnResize() {
-        //     console.info('fo-sticky-note: outerDivOnResize(): Fired!')
-
-        //     // Place the cursor in the same position where it was located before the resize.
-            
-        //     this.setCursorPosition(this.simplemde, this.cursorPosition)
-        // },
 
         initializeVueOuterDivStyles() {            
             let ods = this.vueOuterDiv.style;
@@ -16482,6 +16502,11 @@ var foMarkdownNote = {
             // console.info('fo-markdown-note: markdownNoteOnClick(): Start; e =')
             // console.info(e)
 
+            // console.info('fo-markdown-note: About to emit a click event')
+            this.$emit('click', this);
+            // console.info('fo-markdown-note: Finished emitting a click event')
+
+
             if (this.mode == 'edit') {
                 // console.info('fo-markdown-note: markdownNoteOnClick(): Currently in edit mode; nothing to do')
                 return                  
@@ -16511,23 +16536,7 @@ var foMarkdownNote = {
             for (var i = 0; i < allCursors.length; i++) {
                 allCursors[i].style.borderLeftColor = this.color;
             }      
-        },
-
-        // setCursorPosition: _.debounce((smde, cp) => {
-        //     // smde = simple markdown editor
-        //     // cp = cursor position
-
-        //     // Place the cursor at the position we previously saved in this.cursorPosition.
-
-        //     if (cp) {
-        //         let currentValue = smde.value().trim()
-        //         smde.value(currentValue)
-        //         smde.codemirror.setCursor(cp)
-        //     } else {
-        //         // console.info("fo-markdown-note: setCursorPosition(): Did not set cursor position because this.cursorPosition was null")                    
-        //     }
-
-        // }, 100)
+        }
 
     }
 };
@@ -16754,10 +16763,22 @@ if (GlobalVue) {
     };
 })(jQuery);
 
+var menuIconBlack = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSI0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0zIDE4aDE4di0ySDN2MnptMC01aDE4di0ySDN2MnptMC03djJoMThWNkgzeiIvPgo8L3N2Zz4='
+
+var menuIconWhite = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSI0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0zIDE4aDE4di0ySDN2MnptMC01aDE4di0ySDN2MnptMC03djJoMThWNkgzeiIvPgo8L3N2Zz4='
+
+var closeIconBlack = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHBhdGggZD0iTTE5IDYuNDFMMTcuNTkgNSAxMiAxMC41OSA2LjQxIDUgNSA2LjQxIDEwLjU5IDEyIDUgMTcuNTkgNi40MSAxOSAxMiAxMy40MSAxNy41OSAxOSAxOSAxNy41OSAxMy40MSAxMnoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+'
+
+var closeIconWhite = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjI1NiIgdmlld0JveD0iMCAwIDI0IDI0IiB3aWR0aD0iMjU2IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogICAgPHBhdGggZD0iTTE5IDYuNDFMMTcuNTkgNSAxMiAxMC41OSA2LjQxIDUgNSA2LjQxIDEwLjU5IDEyIDUgMTcuNTkgNi40MSAxOSAxMiAxMy40MSAxNy41OSAxOSAxOSAxNy41OSAxMy40MSAxMnoiLz4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KPC9zdmc+'
+
+var colorIconBlack = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSI0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xMiAzYy00Ljk3IDAtOSA0LjAzLTkgOXM0LjAzIDkgOSA5Yy44MyAwIDEuNS0uNjcgMS41LTEuNSAwLS4zOS0uMTUtLjc0LS4zOS0xLjAxLS4yMy0uMjYtLjM4LS42MS0uMzgtLjk5IDAtLjgzLjY3LTEuNSAxLjUtMS41SDE2YzIuNzYgMCA1LTIuMjQgNS01IDAtNC40Mi00LjAzLTgtOS04em0tNS41IDljLS44MyAwLTEuNS0uNjctMS41LTEuNVM1LjY3IDkgNi41IDkgOCA5LjY3IDggMTAuNSA3LjMzIDEyIDYuNSAxMnptMy00QzguNjcgOCA4IDcuMzMgOCA2LjVTOC42NyA1IDkuNSA1czEuNS42NyAxLjUgMS41UzEwLjMzIDggOS41IDh6bTUgMGMtLjgzIDAtMS41LS42Ny0xLjUtMS41UzEzLjY3IDUgMTQuNSA1czEuNS42NyAxLjUgMS41UzE1LjMzIDggMTQuNSA4em0zIDRjLS44MyAwLTEuNS0uNjctMS41LTEuNVMxNi42NyA5IDE3LjUgOXMxLjUuNjcgMS41IDEuNS0uNjcgMS41LTEuNSAxLjV6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
+
+var colorIconWhite = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSI0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0xMiAzYy00Ljk3IDAtOSA0LjAzLTkgOXM0LjAzIDkgOSA5Yy44MyAwIDEuNS0uNjcgMS41LTEuNSAwLS4zOS0uMTUtLjc0LS4zOS0xLjAxLS4yMy0uMjYtLjM4LS42MS0uMzgtLjk5IDAtLjgzLjY3LTEuNSAxLjUtMS41SDE2YzIuNzYgMCA1LTIuMjQgNS01IDAtNC40Mi00LjAzLTgtOS04em0tNS41IDljLS44MyAwLTEuNS0uNjctMS41LTEuNVM1LjY3IDkgNi41IDkgOCA5LjY3IDggMTAuNSA3LjMzIDEyIDYuNSAxMnptMy00QzguNjcgOCA4IDcuMzMgOCA2LjVTOC42NyA1IDkuNSA1czEuNS42NyAxLjUgMS41UzEwLjMzIDggOS41IDh6bTUgMGMtLjgzIDAtMS41LS42Ny0xLjUtMS41UzEzLjY3IDUgMTQuNSA1czEuNS42NyAxLjUgMS41UzE1LjMzIDggMTQuNSA4em0zIDRjLS44MyAwLTEuNS0uNjctMS41LTEuNVMxNi42NyA5IDE3LjUgOXMxLjUuNjcgMS41IDEuNS0uNjcgMS41LTEuNSAxLjV6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg=='
+
 // console.info("fo-sticky-note.es6.js: Start")
 
 
-var foStickyNote = {
+var foStickyNoteMerged = {
     components: {
         FoMarkdownNote: foMarkdownNote,
         ResizeObserver
@@ -16772,10 +16793,10 @@ var foStickyNote = {
             type: String,
             default: '#f3f3f3'
         }, 
-        color: {
-            type: String,
-            default: '#000'
-        },
+        // color: {
+        //     type: String,
+        //     default: '#000'
+        // },
         fontFamily: {
             // Corresponding attribute: font-family
             type: String,
@@ -16784,11 +16805,15 @@ var foStickyNote = {
         fontSize: {
             // Corresponding attribute: font-size
             type: String,
-            default: '14px'
+            default: '1.0rem'
         },
         lineHeight: {
             type: String,
             default: '1.2'
+        },
+        menuIsPinned: {
+            type: Boolean,
+            default: false
         },
         note: String,
         noteTitle: {
@@ -16799,8 +16824,27 @@ var foStickyNote = {
 
     data() { return {
         blurHandlerEnabled:     true,
+        buttonFontRatio:        0.9,
+        buttonHeightRatio:      2.3,
+        buttonWidthRatio:       2.5,
+        buttonPaddingRatio:     0.55,
+        buttonHoverColor:       this.backgroundColor,
+        color:                  '#000',
+        colorButtonIconId:      this.id + '-color-button-icon',
+        colorButtonId:          this.id + '-color-button',
+        colorIcon:              colorIconBlack,
+        closeButtonIconId:      this.id + '-close-button-icon',
+        closeButtonId:          this.id + '-close-button',
+        closeIcon:              closeIconBlack,
         foMarkdownNote:         null,
         foMarkdownNoteId:       this.id + '-markdown-note',
+        iconOpacityActive:      0.54,
+        iconOpacityInactive:    0.26,
+        menuButtonId:           this.id + '-menu-button',
+        menuButtonIconId:       this.id + '-menu-button-icon',
+        menuDivId:              this.id + '-menu-div',
+        menuOuterDivId:         this.id + '-menu-outer-div',
+        menuIcon:               menuIconBlack,
         markdownDiv:            null,
         markdownDivId:          this.id + '-markdown-div',
         titleBackgroundColor:   this.backgroundColor,
@@ -16808,94 +16852,125 @@ var foStickyNote = {
         titleDivId:             this.id + '-title-div',
         titleInput:             null,
         titleInputId:           this.id + '-title-input',
+        titleMinHeightRatio:    2.3,
         vueOuterDiv:            null
+
     }},
 
     // In the template we set the id of the outer div to be the same as the id of the vue component.
     // Code inside the component should see this as unique and should not confuse it with the vue component itself.
 
+
     template: `
         <div :id='id' 
-            class='outer-div'>
+    class='outer-div' 
+    ref='outerDiv'>
 
-            <div 
-                :id='titleDivId' 
-                class='title-div' 
-                :title='noteTitle' 
-                ref='titleDiv'
-                v-on:click='titleDivOnClick'
-            >{{noteTitle}}</div>
+    <div 
+        :id='titleDivId' 
+        ref='titleDiv'
+        class='title-div' 
+        :title='noteTitle' 
+        v-on:click='titleDivOnClick'
+        >{{noteTitle}}</div>
 
-            <div :id='markdownDivId' class='markdown-div' ref='markdownDiv'>
-                <fo-markdown-note 
-                    :id='foMarkdownNoteId'
-                    v-bind:note='note' 
-                    v-bind:background-color='backgroundColor'
-                    v-bind:color='color'
-                    v-bind:line-height='lineHeight'
-                    v-bind:font-family='fontFamily'
-                    v-bind:font-size='fontSize'
-                    v-on:note-change='noteOnChange($event)'>
-                </fo-markdown-note>
+    <div :id='menuOuterDivId'
+        ref='menuOuterDiv'
+        v-on:mouseenter='menuOnMouseEnter'
+        v-on:mouseleave='menuOnMouseLeave'>
+
+        <div :id='menuDivId' 
+            ref='menuDiv'
+            style='background-color: "red";'>
+
+            <div :id='colorButtonId' ref='colorButton'                        
+                v-on:mouseenter='colorOnMouseEnter'
+                v-on:mouseleave='colorOnMouseLeave'
+                v-on:click='colorButtonOnClick'>
+
+                <img :id='colorButtonIconId' ref='colorButtonIcon'/>
             </div>
+            <div :id='closeButtonId' ref='closeButton'
+                v-on:mouseenter='closeOnMouseEnter'
+                v-on:mouseleave='closeOnMouseLeave'
+                v-on:click='closeButtonOnClick'>
 
-            <textarea 
-                :id='titleInputId' 
-                :title='noteTitle' 
-
-                class='title-textarea' 
-                placeholder='Title' 
-                ref='titleTextarea' 
-                rows='1'
-
-                v-on:blur='titleInputOnBlur'
-                v-on:keydown='titleInputOnKeyDown'
-                v-model='noteTitle' 
-                style='visibility: hidden;'
-            ></textarea>
-
-            <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' />
+                <img :id='closeButtonIconId' ref='closeButtonIcon'/>
+            </div>
         </div>
+
+        <div :id='menuButtonId' 
+            ref='menuButton'
+            v-on:click='menuButtonOnClick'>
+        
+            <img :id='menuButtonIconId' ref='menuButtonIcon'/>
+        </div>
+        
+    </div>
+
+    <div :id='markdownDivId' class='markdown-div' ref='markdownDiv'>
+        <fo-markdown-note 
+            :id='foMarkdownNoteId'
+            v-bind:note='note' 
+            v-bind:background-color='backgroundColor'
+            v-bind:color='color'
+            v-bind:line-height='lineHeight'
+            v-bind:font-family='fontFamily'
+            v-bind:font-size='fontSize'
+            v-on:click='noteOnClick($event)'
+            v-on:note-change='noteOnChange($event)'>
+        </fo-markdown-note>
+    </div>
+
+    <textarea 
+        :id='titleInputId' 
+        :title='noteTitle' 
+
+        class='title-textarea' 
+        placeholder='Title' 
+        ref='titleTextarea' 
+        rows='1'
+
+        v-on:blur='titleInputOnBlur'
+        v-on:keydown='titleInputOnKeyDown'
+        v-model='noteTitle' 
+        style='visibility: hidden;'
+        ref='titleInput'>
+    ></textarea>
+
+    <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' />
+</div>
+
     `,
-
-    // style="visibility: hidden;"
-
-    // EXAMPLE FROM PREVIOUS CODE
-    // <div :id="outerDivId" v-on:drag="stickyNoteOnMouseDrag" v-on:mousedown="stickyNoteOnMouseDown" v-on:mouseup="stickyNoteOnMouseUp">
-
-    //     <div :id="titleDivId" :class="titleDivId" :title="title" style="z-index: 10;">
-    //         {{title}}
-    //     </div>
-
-    //     <i :id="closeButtonId" class="fa fa-close close-button" title="Close" style="z-index: 20;"></i>
-    //     <i :id="menuButtonId" class="fa fa-bars menu-button" v-on:click="stickyNoteOnMenuButtonClick" title="Menu" style="z-index: 20;"></i>
-
-    //     <div :id="menuId" style="z-index: 20;">
-    //         <div :id="menuChoiceColorId" class="menu-choice menu-choice-color" style="z-index: 30;">Color</div>
-    //     </div>
-
-    //     <textarea :id="elementId" style="z-index: 0;">{{note}}</textarea>
-    //     <textarea :id="titleInputId" v-model="title" :title="title" placeholder="Title" @blur="titleInputOnBlur" style="visibility: hidden; z-index: 10;"></textarea>
-    // </div>
 
     mounted() {
         // console.info('fo-sticky-note.es6.js: mounted(): Start')
 
         // Initialize convenience references.
-    
-        this.markdownDiv    = document.getElementById(this.markdownDivId);
-        this.foMarkdownNote = document.getElementById(this.foMarkdownNoteId);
-        this.titleDiv       = document.getElementById(this.titleDivId);
-        this.titleInput     = document.getElementById(this.titleInputId);
-        this.vueOuterDiv    = document.getElementById(this.id);
+        // We prefer tu use Vue's built-in $refs feature but in some instances we have to make our own references.
 
         // console.info('fo-sticky-note.es6.js: mounted(): this.foMarkdownNoteId = ' + this.foMarkdownNoteId)
+
+        this.foMarkdownNote = document.getElementById(this.foMarkdownNoteId);
+
         // console.info('fo-sticky-note.es6.js: mounted(): this.foMarkdownNote = ')
         // console.info(this.foMarkdownNote)
 
-        this.initializeColors();
+        // TODO: Use Vue's built-in $refs for all of these.
+
+        // console.info('fo-sticky-note.es6.js: mounted(): this.markdownDivId = ' + this.markdownDivId)
+    
+        this.titleDiv        = document.getElementById(this.titleDivId);
+        this.markdownDiv     = document.getElementById(this.markdownDivId);
+        this.vueOuterDiv     = document.getElementById(this.id);
+
+        // console.info('fo-sticky-note.es6.js: mounted(): this.markdownDiv = ')
+        // console.info(this.markdownDiv)
+
+        this.setColors();
         this.initializeResizeObserver();
         this.initializeTitleStyles();
+        this.initializeMenuStyles();
         this.initializeMarkdownStyles();
         this.initializeVueOuterDivStyles();
 
@@ -16912,60 +16987,264 @@ var foStickyNote = {
     },
 
     watch: {
-        // note: function (newNote, oldNote) {
-        //     console.info('fo-sticky-note.js: watch: note: Fired! newNote = ' + newNote)
-        // },
+        backgroundColor: function(newValue, oldValue) {
+            // console.info('fo-sticky-note.js: watch: backgroundColor: Fired! newValue = ' + newValue)
+            // console.info('fo-sticky-note.js: watch: backgroundColor: this.backgroundColor = ' + this.backgroundColor)
+            this.setColors();
+        },
+
+        menuIsPinned: function (newValue, oldValue) {
+            // console.info('fo-sticky-note.js: watch: menuIsPinned: Fired! newValue = ' + newValue)
+            if (this.menuIsPinned == true) {
+                this.$refs.colorButtonIcon.style.opacity = this.iconOpacityActive;
+            } else {
+                this.$refs.colorButtonIcon.style.opacity = this.iconOpacityInactive; 
+                this.$refs.menuButton.style.backgroundColor = this.titleBackgroundColor;
+                this.$refs.menuButtonIcon.style.opacity = this.iconOpacityInactive;
+                this.fadeOut(this.$refs.menuDiv);    
+            }
+        },
+
         noteTitle: function (newNoteTitle, oldNoteTitle) {
-            console.info('fo-sticky-note.js: watch: noteTitle: Fired! newNoteTitle = ' + newNoteTitle);
+            // console.info('fo-sticky-note.js: watch: noteTitle: Fired! newNoteTitle = ' + newNoteTitle)
             this.$emit('title-change', newNoteTitle);
         }
     },
 
     methods: {
-        noteOnChange(newNote) {
-            console.info('fo-sticky-note.js: noteOnChange(): Fired!');
+        closeButtonOnClick() {
+            this.$emit('close-button-click', this.id);
+            this.$refs.closeButton.style.backgroundColor = this.backgroundColor;
+            setTimeout(() => { 
+                this.$refs.closeButton.style.backgroundColor = this.buttonHoverColor;
+            }, 100);
+        },
+
+        closeOnMouseEnter() {
+            this.$refs.closeButtonIcon.style.opacity = this.iconOpacityActive;
+        },
+
+        colorButtonOnClick(e) {
+            // We always want to send the button element, not the image, to any event handler.
+
+            var targetElement = e.target;
+
+            if (targetElement.tagName.toUpperCase() === 'IMG') {
+                targetElement = targetElement.parentElement;
+            }
+
+            targetElement.noteId = this.id;
+
+            if (this.menuIsPinned) {
+                this.dismissColorButton(targetElement);
+            } else {
+                this.pinColorButton(targetElement);
+            }
+
+            this.$refs.colorButton.style.backgroundColor = this.backgroundColor;
+            setTimeout(() => { 
+                this.$refs.colorButton.style.backgroundColor = this.buttonHoverColor;
+            }, 100);
+        },
+
+        closeOnMouseLeave() {
+            this.$refs.closeButtonIcon.style.opacity = this.iconOpacityInactive;
+        },
+
+        colorOnMouseEnter() {
+            this.$refs.colorButtonIcon.style.opacity = this.iconOpacityActive;
+        },
+
+        colorOnMouseLeave() {
+            if (!this.menuIsPinned) {
+                this.$refs.colorButtonIcon.style.opacity = this.iconOpacityInactive;
+            }
+        },
+
+        dismissColorButton(targetElement) {
+            this.$emit('color-button-unclick', targetElement);
+            this.menuIsPinned = false;
+        },
+
+        fadeOut(el) {
+            el.style.opacity = 1;
+            (function fade() {
+                if ((el.style.opacity -= .1) < 0) {
+                    el.style.display = "none";
+                } else {
+                    requestAnimationFrame(fade);
+                }
+            })();
+        },
+          
+        fadeIn(el, display) {
+            el.style.opacity = 0;
+            el.style.display = display || "block";          
+            (function fade() {
+                var val = parseFloat(el.style.opacity);
+                if (!((val += .1) > 1)) {
+                    el.style.opacity = val;
+                    requestAnimationFrame(fade);
+                }
+            })();
+        },
+
+        initializeMenuStyles() {
+            // Buttons are sized proportionally to the actual font size seen in the title.
             
-            this.note = newNote;
-            console.info('fo-sticky-note.js: noteOnChange(): this.note =');
-            console.info(this.note);
+            let propertyValue = window.getComputedStyle(this.titleDiv).getPropertyValue('font-size');
+            // console.info('fo-sticky-note.js: initializeButtonStyles(): propertyValue = ' + propertyValue)
 
-            this.$emit('note-change', this.note);
-        },
+            let actualFontSize = parseFloat(propertyValue);
+            // console.info('fo-sticky-note.js: initializeButtonStyles(): actualFontSize = ' + actualFontSize)
 
-        initializeColors() {
-            // console.info('fo-sticky-note.js: initializeColors(): this.backgroundColor = ' + this.backgroundColor)
+            // OK to use px here since we're computing a height.
 
-            // We need to get a color that is an object, not a string. Do this by setting the color of an element,
-            // then getting its computed style.
+            var buttonFontSize  = actualFontSize * this.buttonFontRatio;
+            var buttonHeight    = actualFontSize * this.buttonHeightRatio;
+            var buttonWidth     = actualFontSize * this.buttonWidthRatio;
+            var buttonPadding   = actualFontSize * this.buttonPaddingRatio;
+            var menuWidth       = buttonWidth * 2;
 
-            let mds = this.markdownDiv.style;
-            mds.backgroundColor = this.backgroundColor;
-            let computedColor = getComputedStyle(this.markdownDiv).backgroundColor;
-            // console.info('fo-sticky-note.js: initializeColors(): computedColor = ' + computedColor)
+            var roundButtonMargin = actualFontSize * this.buttonPaddingRatio * 0.3;
+            var roundButtonPadding = 0;
+            var roundButtonHeight = buttonHeight - (roundButtonMargin * 2) - (roundButtonPadding * 2);
+            var roundButtonWidth  = buttonWidth - (roundButtonMargin * 2) - (roundButtonPadding * 2);
+            var roundButtonBorderRadius = roundButtonWidth * 0.5;
 
-            let computedColorString = this.rgb2hex(computedColor);
-            // shadeColor takes a string that has EXACTLY seven characters, e.g. "#FF00FF".
-            this.titleBackgroundColor = this.shadeColor(computedColorString, -0.1);
+            var closeButtonOffset = roundButtonPadding + roundButtonMargin;
+            var colorButtonRight = buttonWidth + closeButtonOffset;
+            menuWidth = menuWidth + (closeButtonOffset * 2);
 
-            // TODO: Compute button colors, hover colors, etc.
-            // TODO: If a text color is not provided, compute it based on darkness of background color.
-        },
+            // console.info('fo-sticky-note.js: initializeMenuStyles(): buttonWidth = ' + buttonWidth)
+            // console.info('fo-sticky-note.js: initializeMenuStyles(): menuWidth = ' + menuWidth)
 
-        initializeResizeObserver() {
+            var imageHeight = buttonHeight - (2 * buttonPadding);
+            var imageWidth  = buttonWidth  - (2 * buttonPadding);
 
-            // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.vueOuterDiv = ')
-            // console.info(this.vueOuterDiv)
+            // console.info('fo-sticky-note.js: initializeButtonStyles(): imageHeight = ' + imageHeight)
+            // console.info('fo-sticky-note.js: initializeButtonStyles(): imageWidth = ' + imageWidth)
 
-            let resizeObserver = document.getElementById('outer-div-resize-observer');
-            resizeObserver.style.position = 'relative';
+            buttonFontSize  = buttonFontSize.toString() + 'px';
+            buttonHeight    = buttonHeight.toString() + 'px';
+            buttonWidth     = buttonWidth.toString() + 'px';
+            buttonPadding   = buttonPadding.toString() + 'px';
+            imageHeight     = imageHeight.toString() + 'px';
+            imageWidth      = imageWidth.toString() + 'px';
+            menuWidth       = menuWidth.toString() + 'px';
+
+            roundButtonMargin  = roundButtonMargin.toString() + 'px';
+            roundButtonPadding = roundButtonPadding.toString() + 'px';
+            roundButtonHeight  = roundButtonHeight.toString() + 'px';
+            roundButtonWidth   = roundButtonWidth.toString() + 'px';
+            roundButtonBorderRadius = roundButtonBorderRadius.toString() + 'px';
+
+            closeButtonOffset = closeButtonOffset.toString() + 'px';
+            colorButtonRight = colorButtonRight.toString() + 'px';
+
+            // console.info('fo-sticky-note.js: initializeButtonStyles(): this.menuIcon = ')
+            // console.info(this.menuIcon)
+
+            this.$refs.menuButtonIcon.src = this.menuIcon;
+            
+            let mbs = this.$refs.menuButton.style;
+                mbs.position        = 'absolute';
+                mbs.height          = buttonHeight;
+                mbs.width           = buttonWidth;
+                mbs.top             = '0';
+                mbs.right           = '0';
+                mbs.border          = '0';
+                mbs.outline         = 'none';
+                mbs.padding         = '0';
+                mbs.textAlign       = 'center';
+                mbs.verticalAlign   = 'middle';
+                mbs.zIndex          = 30;
+
+            let cbis = this.$refs.menuButtonIcon.style;
+                cbis.position   = 'absolute';
+                cbis.height     = imageHeight;
+                cbis.width      = imageWidth;
+                cbis.top        = buttonPadding;
+                cbis.right      = buttonPadding;
+                cbis.opacity    = this.iconOpacityInactive;  // Google material icons guideline
+
+            this.titleDiv.style.paddingRight = buttonWidth;
+            this.$refs.titleInput.style.paddingRight = buttonWidth;
+
+            // console.info('fo-sticky-note.js: initializeMenuStyles(): menuWidth = ' + menuWidth)
+
+            let muds = this.$refs.menuDiv.style;
+                muds.backgroundColor = this.titleBackgroundColor;
+                // muds.backgroundColor = 'red'
+                muds.position = 'absolute';
+                muds.top = '0';
+                muds.right = buttonWidth;
+                muds.height = buttonHeight;
+                muds.width = menuWidth;
+                muds.border = '0';
+                muds.opacity = 0;
+                muds.outline = 'none';
+                muds.display = 'flex';
+                muds.justifyContent = 'right';
+                muds.zIndex = 30;
+
+            this.$refs.colorButtonIcon.src = this.colorIcon;
+
+            let crbs = this.$refs.colorButton.style;
+                crbs.backgroundColor = this.buttonHoverColor;
+                crbs.position        = 'absolute';
+                crbs.height          = roundButtonHeight;
+                crbs.width           = roundButtonWidth;
+                crbs.top             = '0';
+                crbs.right           = colorButtonRight;
+                crbs.border          = '0';
+                crbs.outline         = 'none';
+                crbs.padding         = roundButtonPadding;
+                crbs.margin          = roundButtonMargin;
+                crbs.borderRadius    = roundButtonBorderRadius;
+                crbs.display         = 'flex';
+                crbs.justifyContent = 'center';
+                crbs.alignItems     = 'center';
+
+            let crbis = this.$refs.colorButtonIcon.style;
+                // crbis.position   = 'relative'
+                crbis.height     = imageHeight;
+                crbis.width      = imageWidth;
+                crbis.opacity    = this.iconOpacityInactive;  // Google material icons guideline
+
+
+            this.$refs.closeButtonIcon.src = this.closeIcon;
+
+            let clbs = this.$refs.closeButton.style;
+                clbs.backgroundColor = this.buttonHoverColor;
+                clbs.position        = 'absolute';
+                clbs.height          = roundButtonHeight;
+                clbs.width           = roundButtonWidth;
+                clbs.top             = '0';
+                clbs.right           = closeButtonOffset;
+                clbs.border          = '0';
+                clbs.outline         = 'none';
+                clbs.padding         = roundButtonPadding;
+                clbs.margin          = roundButtonMargin;
+                clbs.borderRadius    = roundButtonBorderRadius;
+                clbs.display         = 'flex';
+                clbs.justifyContent = 'center';
+                clbs.alignItems     = 'center';
+
+            let clbis = this.$refs.closeButtonIcon.style;
+                // clbis.position   = 'relative'
+                clbis.height     = imageHeight;
+                clbis.width      = imageWidth;
+                clbis.opacity    = this.iconOpacityInactive;  // Google material icons guideline
 
         },
 
         initializeMarkdownStyles() {
+            let markdownTop = (this.titleDiv.style.height - 1).toString() + 'px';
+
             let mds = this.markdownDiv.style;
-                mds.backgroundColor = 'transparent';
-                mds.top = this.titleDiv.style.height;
-                // mds.top = this.titleInput.offsetHeight
+                mds.backgroundColor = this.backgroundColor;
+                mds.top = this.markdownTop;
                 mds.position = 'absolute';
                 mds.height = '100%';
                 mds.width = '100%';
@@ -16981,40 +17260,55 @@ var foStickyNote = {
 
         },
 
+        initializeResizeObserver() {
+
+            // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.vueOuterDiv = ')
+            // console.info(this.vueOuterDiv)
+
+            let resizeObserver = document.getElementById('outer-div-resize-observer');
+            resizeObserver.style.position = 'relative';
+
+        },
+
+        initializeStyles() {
+            let html = document.getElementsByTagName('html')[0];
+            let htmlStyle = html.style;
+            html.fontSize = '62.5%';
+        },
+
         initializeTitleStyles() {
             let tds = this.titleDiv.style;
                 tds.width = '100%';
                 tds.position = 'absolute';
                 tds.fontSize = this.fontSize;
                 tds.fontFamily = this.fontFamily;
-                tds.padding = '6px 10px 6px 10px'; // top right bottom left
+                tds.padding = '0.6rem 1.0rem 0.6rem 1.0rem'; // top right bottom left
                 tds.backgroundColor = this.titleBackgroundColor;
                 tds.color = this.color;
                 tds.cursor = 'default';
                 tds.boxSizing = 'border-box';
                 tds.zIndex = 20;
 
-            let tis = this.titleInput.style;
+            // For some unknown reason, the textarea's font-family has to be set this way.
+            this.$refs.titleInput.setAttribute('style','font-family: ' + this.fontFamily + ';');
+
+            let tis = this.$refs.titleInput.style;
                 tis.position = 'absolute';
                 tis.top = '0';
                 tis.fontSize = this.fontSize;
-                tis.fontFamily = this.fontFamily;
                 tis.backgroundColor = this.titleBackgroundColor;
                 tis.color = this.color;
                 tis.border = 'none';
                 tis.borderWidth = '0';
-                tis.height = this.titleDiv.offsetHeight + 'px';
-                tis.minHeight = this.titleDiv.offsetHeight + 'px';
-                tis.minWidth = this.titleDiv.offsetWidth + 'px';
-                tis.maxWidth = this.titleDiv.offsetWidth + 'px';
-                tis.padding = '5px 10px 0px 10px'; // top right bottom left
+                tis.padding = '0.5rem 1.0rem 0 1.0rem'; // top right bottom left
+                tis.overflow = 'hidden';
                 tis.width = '100%';
                 tis.verticalAlign = 'top';
                 tis.resize = 'none';
                 tis.boxSizing = 'border-box';
                 tis.zIndex = 10;
 
-            $(this.titleInput).autogrow();
+            $(this.$refs.titleInput).autogrow();
         },
 
         initializeVueOuterDivStyles() {
@@ -17022,8 +17316,50 @@ var foStickyNote = {
 
             let ods = this.vueOuterDiv.style;
                 ods.width = '100%';
+                ods.backgroundColor = "#FF0000";
 
             // console.info('fo-sticky-note: initializeVueOuterDivStyles(): End')
+        },
+
+        menuButtonOnClick() {
+            this.fadeIn(this.$refs.menuDiv);            
+        },
+
+        pinColorButton(targetElement) {
+            this.$emit('color-button-click', targetElement);
+            this.menuIsPinned = true;
+        },
+
+        menuOnMouseEnter() {
+            // console.info('fo-sticky-note.js: menuOnMouseEnter(): Fired')
+            this.$refs.menuButton.style.backgroundColor = this.buttonHoverColor;
+            this.$refs.menuButtonIcon.style.opacity = this.iconOpacityActive;
+            this.fadeIn(this.$refs.menuDiv);
+        },
+
+        menuOnMouseLeave(e) {
+            // console.info('fo-sticky-note.js: menuOnMouseLeave(): Fired; this.menuIsPinned = ' + this.menuIsPinned)
+            if (this.menuIsPinned) {
+                // console.info('fo-sticky-note.js: menuOnMouseLeave(): Menu is pinned')
+            } else {                
+                this.$refs.menuButton.style.backgroundColor = this.titleBackgroundColor;
+                this.$refs.menuButtonIcon.style.opacity = this.iconOpacityInactive;
+                setTimeout(() => {
+                    this.fadeOut(this.$refs.menuDiv);
+                }, 100);
+                this.$emit('menu-mouse-leave', e);    
+            }
+        },
+
+        noteOnChange(newNote) {
+            this.note = newNote;
+
+            this.$emit('note-change', this.note);
+        },
+
+        noteOnClick(e) {
+            // console.info('fo-sticky-note: noteOnClick(): Fired!')
+            this.dismissColorButton(this.colorButton);
         },
 
         outerDivOnResize() {
@@ -17035,48 +17371,114 @@ var foStickyNote = {
         resizeElements() {
             // Get the dimensions from which others will be derived.
 
-            // console.info('fo-sticky-note: resizeElements(): this.markdownDiv = ')
-            // console.info(this.markdownDiv)
+            // console.info('fo-sticky-note: resizeElements(): Fired!')
 
-            // let titleHeight = this.titleDiv.offsetHeight
-            // let markdownDivHeight = this.markdownDiv.offsetHeight
-            // let markdownDivWidth = this.markdownDiv.offsetWidth
-
-            let titleHeight = this.$refs.titleDiv.offsetHeight;
-            let markdownDivHeight = this.$refs.markdownDiv.offsetHeight;
-            let markdownDivWidth = this.$refs.markdownDiv.offsetWidth;
-
-            console.info('fo-sticky-note: resizeElements(): titleHeight = ' + titleHeight);
-            // console.info('fo-sticky-note: resizeElements(): markdownDivHeight = ' + markdownDivHeight)
-            // console.info('fo-sticky-note: resizeElements(): markdownDivWidth = ' + markdownDivWidth)
+            let fontSize          = window.getComputedStyle(this.$refs.titleInput).getPropertyValue('font-size');
+            let titleHeight       = window.getComputedStyle(this.titleDiv).getPropertyValue('height');
+            let titleWidth        = window.getComputedStyle(this.titleDiv).getPropertyValue('width');
+            let markdownDivHeight = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('height');
+            let markdownDivWidth  = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('width');
 
             // Derived dimensions.
 
             let markdownNoteTop = titleHeight;
-            let markdownNoteHeight = markdownDivHeight - titleHeight;
+            let markdownNoteHeight = (parseFloat(markdownDivHeight) - parseFloat(titleHeight)).toString() + 'px';
+            let titleMinHeight = (parseFloat(fontSize) * this.titleMinHeightRatio).toString() + 'px';
 
             // Set the dimensions.
 
+            let tds = this.titleDiv.style;
+                tds.minHeight = titleMinHeight;
+
             let fmns = this.foMarkdownNote.style;
-                fmns.top = markdownNoteTop + 'px';
-                fmns.height = markdownNoteHeight + 'px';
+                fmns.top = markdownNoteTop;
+                fmns.height = markdownNoteHeight;
 
-            // this.setTextareaHeight(this.titleInput, titleHeight)
+            let tis = this.$refs.titleInput.style;
+                tis.height    = titleHeight;
+                tis.minHeight = titleMinHeight;
+                tis.width     = titleWidth;
+                tis.minWidth  = titleWidth;
+                tis.maxWidth  = titleWidth;
 
-            this.titleInput.style.height = titleHeight;
+
+            // this.setTextareaHeight(this.$refs.titleInput, titleHeight)
+
+            this.$refs.titleInput.style.height = titleHeight;
 
         },
 
+        setColors() {
+            // console.info('fo-sticky-note.js: setColors(): this.backgroundColor = ' + this.backgroundColor)
+
+            // We need to get a color that is an object, not a string. Do this by setting the color of an element,
+            // then getting its computed style.
+
+            let mds = this.markdownDiv.style;
+                mds.backgroundColor = this.backgroundColor;
+
+            let computedColor = getComputedStyle(this.markdownDiv).backgroundColor;
+
+            let computedColorString = this.rgb2hex(computedColor);
+            this.titleBackgroundColor = this.shadeColor(computedColorString, -0.1);
+            this.buttonHoverColor = this.shadeColor(computedColorString, -0.3);
+
+            // Determine whether to use black or white icons based on how dark the background is.
+
+            let howLight = this.howLight(computedColor);
+            // console.info('fo-sticky-note.js: setColors(): howLight = ' + howLight)
+
+            // Icon opacities are based on Google Material Icons guidelines.
+            if (howLight > 80) {
+                this.menuIcon = menuIconBlack;
+                this.colorIcon = colorIconBlack;
+                this.closeIcon = closeIconBlack;
+                this.iconOpacityActive = 0.54;
+                this.iconOpacityInactive = 0.26;
+                this.color = 'black';
+            } else {
+                this.menuIcon = menuIconWhite;
+                this.colorIcon = colorIconWhite;
+                this.closeIcon = closeIconWhite;
+                this.iconOpacityActive = 1.0;
+                this.iconOpacityInactive = 0.30;
+                this.color = 'white';
+            }
+
+            let crbs = this.$refs.colorButton.style;
+                crbs.backgroundColor = this.buttonHoverColor;
+
+            let clbs = this.$refs.closeButton.style;
+                clbs.backgroundColor = this.buttonHoverColor;
+
+            let muds = this.$refs.menuDiv.style;
+                muds.backgroundColor = this.titleBackgroundColor;
+
+            let tds = this.titleDiv.style;
+                tds.backgroundColor = this.titleBackgroundColor;
+                tds.color = this.color;
+
+            let tis = this.$refs.titleInput.style;
+                tis.backgroundColor = this.titleBackgroundColor;
+                tis.color = this.color;
+
+            this.$refs.colorButtonIcon.src = this.colorIcon;
+            this.$refs.closeButtonIcon.src = this.closeIcon;
+            this.$refs.menuButtonIcon.src = this.menuIcon;            
+        },
+
         stickyNoteOnBlur(e) {
+            // console.info('fo-sticky-note: stickyNoteOnBlur(): Start')
             if (this.blurHandlerEnabled) {
-                // console.info('fo-sticky-note: stickyNoteOnBlur(): Start; e = ')
+                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled; e = ')
                 // console.info(e)
 
-            } else {
-                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is not enabled; nothing to to')   
+                this.$emit('blur', e);
 
+            } else {
                 // Re-enable blur handling. If it needs to be disabled again, onMouseDown will take care of that.
 
+                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is NOT enabled')
                 this.blurHandlerEnabled = true;                 
             }
         },
@@ -17098,35 +17500,37 @@ var foStickyNote = {
         },
 
         titleDivOnClick(e) {
-            console.info('fo-sticky-note: titleDivOnClick(): Fired!'); 
+            // console.info('fo-sticky-note: titleDivOnClick(): Fired!') 
+            this.dismissColorButton(this.colorButton);
 
-            let titleDivHeight = this.titleDiv.offsetHeight;
+            let titleDivHeight = window.getComputedStyle(this.titleDiv).getPropertyValue('height');
 
             let tds = this.titleDiv.style;
-            let tis = this.titleInput.style;
+            let tis = this.$refs.titleInput.style;
 
             tds.visibility = 'hidden';
             tds.zIndex = 10;
 
-            tis.offsetHeight = titleDivHeight;
+            tis.height = titleDivHeight;
+            tis.top = '0';
             tis.visibility = 'visible';
             tis.zIndex = 20;
 
             // Place the cursor at the end of the text by clearing and setting the value.
             // Save old value as we need to clear it
-            let val = this.titleInput.value;
+            let val = this.$refs.titleInput.value;
   
             // Focus the textarea, clear value, re-apply
-            this.titleInput.focus();
-            this.titleInput.value = '';
-            this.titleInput.value = val;
+            this.$refs.titleInput.focus();
+            this.$refs.titleInput.value = '';
+            this.$refs.titleInput.value = val;
         },
 
         titleInputOnBlur(e) {
-            console.info('fo-sticky-note: titleInputOnBlur(): Fired!'); 
+            // console.info('fo-sticky-note: titleInputOnBlur(): Fired!') 
 
             let tds = this.titleDiv.style;
-            let tis = this.titleInput.style;
+            let tis = this.$refs.titleInput.style;
 
             tds.visibility = 'visible';
             tds.zIndex = 20;
@@ -17145,12 +17549,26 @@ var foStickyNote = {
             }
         },
 
-        // Color utility methods
+        // Color utility methods, borrowed from tinycolor
+        // https://github.com/bgrins/TinyColor
 
         hex(x) {
             var hexDigits = new Array("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f");
             return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
         },
+
+        howLight(rgbString) {
+            let rgb = this.rgbStringToRgbValues(rgbString);
+    
+            var howLight = Math.round(
+                (
+                    (parseInt(rgb[0]) * 299) +
+                    (parseInt(rgb[1]) * 587) +
+                    (parseInt(rgb[2]) * 114)
+                ) / 1000);
+    
+            return howLight
+        },  
 
         // Function to convert rgb color to hex format
         rgb2hex(rgb) {
@@ -17178,4 +17596,4 @@ var foStickyNote = {
 
 // console.info("fo-sticky-note.es6.js: End")
 
-export default foStickyNote;
+export default foStickyNoteMerged;

@@ -1,122 +1,140 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <meta charset='utf-8'>
-    <title>fo-sticky-note Vue Component</title>
+    <meta charset='UTF-8'>
 
-    <!-- 
-    These dependencies are expected to be in any environment in which the component is used.
-    They are not bundled into fo-sticky-note-bundle.js.
-    -->
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="node_modules/jqueryui/jquery-ui.min.js"></script>
-    <script src="node_modules/lodash/lodash.js"></script>
-    <script src="node_modules/vue/dist/vue.min.js"></script>
-
-    <!-- 
-    Gridstack is used in the test application only as a convenient means of 
-    arranging multiple instances of fo-sticky-note on the page.
-    -->
-    <script src="node_modules/gridstack/dist/gridstack.min.js"></script>
-    <script src="node_modules/gridstack/dist/gridstack.jQueryUI.min.js"></script>
-    <link rel="stylesheet" href="node_modules/gridstack/dist/gridstack.min.css" />
+    <title>fo-sticky-note Test</title>
 
     <!-- index.css is part of the test application only, not fo-sticky-note. -->
     <link rel="stylesheet" href="index.css" />
 
 </head>
+
 <body>
-    <div id="app">
-        <h2>fo-sticky-note Vue.js Component Test Page</h2>        
-        <div id='grid-stack' class="grid-stack">
+    <div id="app"
+         v-on:keydown='appOnKeyDown($event)'
+    >
+        <h2>fo-sticky-note Vue.js Component Test Page</h2>      
 
-            <div class="grid-stack-item" data-gs-width="4" data-gs-height="4">
-                <div class="grid-stack-item-content">
-                    <div id="container1" class="note-container">
-                        <fo-sticky-note 
-                            id="note1"
-                            note-title="Typewriter drill"
-                            note="### Typewriter drill
-*Now is the time for all good men to come to the aid of their country.*
+        <button v-on:click="addWidget('stickynotecontainer')" style='margin-bottom:10px;'>New Sticky Note</button>
+    
+        <div id='grid-stack' class='grid-stack'
+            v-on:keydown='gridStackOnKeyDown($event)'
+        >
 
-It exactly fills out a 70-space line if you put a period at the end." 
-                            background-color="LemonChiffon"
-                            v-on:note-change="handleNoteChange($event)"
-                            v-on:title-change="handleTitleChange($event)">
-                        </fo-sticky-note>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid-stack-item" data-gs-x="0" data-gs-y="6" data-gs-width="5" data-gs-height="4">
-                <div class="grid-stack-item-content">
-                    <div id="container2" class="note-container">
-                        <fo-sticky-note 
-                            id="note2" 
-                            line-height='1.8'
-                            note-title="Juliet's famous soliloqy"
-                            note="**Juliet**
+            <!-- 
+                Because this <sticky-note-container> tag has v-for attribute, it actually represents
+                multiple instances of <sticky-note-container> which are represented by the array stored 
+                in the app's data element called 'dataObjects'.
 
-O Romeo, Romeo, wherefore art thou Romeo?
-Deny thy father and refuse thy name.
-Or if thou wilt not, be but sworn my love
-And I’ll no longer be a Capulet.
-‘Tis but thy name that is my enemy:
-Thou art thyself, though not a Montague.
-What’s Montague? It is nor hand nor foot
-Nor arm nor face nor any other part
-Belonging to a man. O be some other name.
-What’s in a name? That which we call a rose
-By any other name would smell as sweet;
-So Romeo would, were he not Romeo call’d,
-Retain that dear perfection which he owes
-Without that title. Romeo, doff thy name,
-And for that name, which is no part of thee,
-Take all myself.">
-                        </fo-sticky-note>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid-stack-item" data-gs-x="4" data-gs-y="0" data-gs-width="4" data-gs-height="4">
-                <div class="grid-stack-item-content">
-                    <div id="container3" class="note-container">
-                        <fo-sticky-note 
-                            id="note3" 
-                            note-title="Opening sentence"
-                            note="Now in these dread latter days of the old violent beloved U.S.A. and of the Christ-forgetting Christ-haunted death-dealing Western world I came to myself in a grove of young pines and the question came to me: has it happened at last?
-        
-Walker Percy
-*Love in the Ruins*"
-                            background-color="PaleGreen"
-                            font-family="'Palatino Linotype', 'Liberation Serif'"
-                            font-size="16px">
-                        </fo-sticky-note>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid-stack-item" data-gs-x="5" data-gs-y="6" data-gs-width="4" data-gs-height="4">
-                <div class="grid-stack-item-content">
-                    <div id="container4" class="note-container">
-                        <fo-sticky-note 
-                            id="note4" 
-                            note-title="Faulkner is hard to read"
-                            note="There was a wisteria vine blooming for the second time that summer on a wooden trellis before one window, into which sparrows came now and then in random gusts, making a dry vivid dusty sound before going away: and opposite Quentin, Miss Coldfield in the eternal black which she had worn for forty-three years now, whether for sister, father, or nothusband none knew, sitting so bolt upright in the straight hard chair that was so tall for her that her legs hung straight and rigid as if she had iron shinbones and ankles, clear of the floor with that air of impotent and static rage like children’s feet, and talking in that grim haggard amazed voice until at last listening would renege and hearing-sense self-confound and the long-dead object of her impotent yet indomitable frustration would appear, as though by outraged recapitulation evoked, quiet inattentive and harmless, out of the biding and dreamy and victorious dust.
+                Notice that the eachDataObject iterator is in scope everywhere within the 
+                <sticky-note-container> tag.
+            -->
 
-William Faulkner
-*Absalom, Absalom\!*" 
-                            background-color="RebeccaPurple" 
-                            color="#fff">
-                        </fo-sticky-note>
-                    </div>
-                </div>
-            </div>
-        
-        </div>    
+            <grid-stack-item
+                v-for="eachDataObject in dataObjects"
+                v-bind:dataobject="eachDataObject"
+                        
+                v-on:remove="removeWidget(eachDataObject)"
+
+                v-on:color-button-click='handleGiColorButtonClick($event)'
+                v-on:color-button-unclick='handleGiColorButtonUnclick($event)'
+                v-on:note-change='handleGiNoteChange($event)'
+                v-on:title-change='handleGiTitleChange($event)'
+                v-on:blur='handleGiBlur($event)'
+                v-on:close-button-click='handleGiCloseButtonClick($event)'
+                v-on:keydown='gsiOnKeyDown($event)'
+                >
+            </grid-stack-item>
+
+        </div>
+
+        <swatches 
+            id="colorPicker" 
+            v-model="colors"
+            v-on:color-change='handleColorChange($event)'
+            v-on:keydown='colorPickerOnKeyDown($event)'
+            >
+        </swatches>
+    
     </div>
 
-    <!-- index.es6.js is part of the test application only, not fo-sticky-note. -->
-    <script type="module" src="index.es6.js"></script>
+    <!-- This template is used by the VueJS component named 'sticky-note-container', and defined in index.js. -->
+    
+    <template id="gsi-template">
+        <!-- 
+            The first div is the gridstack item's outer div.
+            VueJS data bindings are attached to both the outer div and the fo-sticky-note.
+        -->
+        <div v-bind:id="dataobject.id"
+            v-bind:data-gs-id="dataobject.id"
+            v-bind:data-gs-width="5"
+            v-bind:data-gs-height="4"
+            >
+        
+            <!-- The 'grid-stack-item-content' div is contained inside the VueJS grid-stack-item component. -->
+
+            <div class="grid-stack-item-content"
+                v-on:keydown='gsiContentOnKeyDown($event)'
+                >
+                <fo-sticky-note v-bind:id='dataobject.stickyNote.id' 
+                    v-bind:background-color='dataobject.stickyNote.backgroundColor'
+                    v-bind:color='dataobject.stickyNote.color'
+                    v-bind:font-family='dataobject.stickyNote.fontFamily'
+                    v-bind:font-size='dataobject.stickyNote.fontSize'
+                    v-bind:line-height='dataobject.stickyNote.lineHeight'
+                    v-bind:menu-is-pinned='dataobject.stickyNote.menuIsPinned'
+                    v-bind:note='dataobject.stickyNote.note' 
+                    v-bind:note-title='dataobject.stickyNote.noteTitle'
+                    
+                    v-on:color-button-click='handleSnColorButtonClick($event)'
+                    v-on:color-button-unclick='handleSnColorButtonUnclick($event)'
+                    v-on:close-button-click='handleSnCloseButtonClick($event)'
+                    v-on:note-change='handleSnNoteChange($event)'
+                    v-on:title-change='handleSnTitleChange($event)'
+                    v-on:blur='handleSnBlur($event)'
+                    v-on:keydown='stickyNoteOnKeyDown($event)'
+                    >
+                </fo-sticky-note>
+            </div>
+    
+        </div>
+    </template>
+
+    <!-- 
+    Best practice is to load all of the JavaScript libraries at the end of the <body>, just before
+    the closing </body> tag. 
+    -->
+
+    <!-- 
+    These dependencies are expected to be in any environment in which the component is used.
+    They are not bundled into our component.
+    -->
+
+    <script src='node_modules/jquery/dist/jquery.min.js'></script>
+    <script src='node_modules/jqueryui/jquery-ui.min.js'></script>
+    <script src='node_modules/lodash/lodash.min.js'></script>
+    <script src='node_modules/vue/dist/vue.min.js'></script>
+
+    <!-- 
+    Gridstack is used in the test application as a convenient means of 
+    arranging multiple instances of fo-sticky-note on the page.
+    -->
+
+    <script src="node_modules/gridstack/dist/gridstack.min.js"></script>
+    <script src="node_modules/gridstack/dist/gridstack.jQueryUI.min.js"></script>
+    <link rel="stylesheet" href="node_modules/gridstack/dist/gridstack.min.css" />
+
+    <!-- 
+    Utilities 
+    -->
+    
+    <script src='lib/lorem-ipsum.js'></script>
+    <script src='lib/randomColor.js'></script>
+
+    <script type='module' src='./index.es6.js'></script>
+
 </body>
+
 </html>
