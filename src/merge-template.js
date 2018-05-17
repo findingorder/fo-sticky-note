@@ -20,10 +20,10 @@ let templateFileContents = fs.readFileSync(templateFile, 'utf8').toString()
 let mainFileSplit = mainFileContents.split('{{vueTemplate}}')
 let mergedFileContents = mainFileSplit[0] + templateFileContents + mainFileSplit[1]
 
-// // Save the merged file.
+// Save the merged file.
 
-console.log('merge-template.js: mergedFileContents = ')
-console.log(mergedFileContents)
+// console.log('merge-template.js: mergedFileContents = ')
+// console.log(mergedFileContents)
 
 var baseName = path.basename(mainFile)
 nameToUse = baseName.split('.js')[0]

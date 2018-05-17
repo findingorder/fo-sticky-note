@@ -22,7 +22,6 @@
         <div id='grid-stack' class='grid-stack'
             v-on:keydown='gridStackOnKeyDown($event)'
         >
-
             <!-- 
                 Because this <sticky-note-container> tag has v-for attribute, it actually represents
                 multiple instances of <sticky-note-container> which are represented by the array stored 
@@ -48,6 +47,16 @@
                 >
             </grid-stack-item>
 
+        </div>
+
+        <br/>
+        
+        <div style='height: 300px; width: 300px; max-height: 300px; max-width: 300px; background-color:teal;'>
+            <fo-sticky-note
+                id='FeeFieFoeFum'
+                note='How do you like this sticky note?'
+                note-title='Outside of the Gridstack'
+            ></fo-sticky-note>
         </div>
 
         <swatches 

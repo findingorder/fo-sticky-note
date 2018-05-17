@@ -1,10 +1,20 @@
 // console.info("fo-sticky-note.es6.js: Start")
 
-import FoMarkdownNote from 'fo-markdown-note'
+
+// TODO: Round buttons are 1px too high.
+// TODO: Single click on title needs to position cursor.
+// TODO: Vertical only resizing.
+
+// TODO: Clean up the code, commit, and publish to GitHub + NPM.
+
 
 // https://github.com/Akryum/vue-resize
+// import { ResizeObserver } from 'vue-resize'
+
+import FoMarkdownNote from 'fo-markdown-note'
+
 import './node_modules/vue-resize/dist/vue-resize.css'
-import { ResizeObserver } from 'vue-resize'
+import resize from 'vue-resize-directive'
 import './lib/jquery-autogrow-textarea.js'
 
 import menuIconBlack   from './img/ic_menu_black_48px.svg'
@@ -14,11 +24,28 @@ import closeIconWhite  from './img/ic_close_white_256px.svg'
 import colorIconBlack  from './img/ic_color_lens_black_48px.svg'
 import colorIconWhite  from './img/ic_color_lens_white_48px.svg'
 
+// About absolute positioning:
+// w3schools.com documentation states:
+//     An element with position: absolute; is positioned relative to the nearest positioned ancestor 
+//     (instead of positioned relative to the viewport, like fixed).
+//     However; if an absolute positioned element has no positioned ancestors, it uses the document body, 
+//     and moves along with page scrolling.
+//     Note: A "positioned" element is one whose position is anything except static.
+//
+// We want to use height: 100% on some elements to avoid having to explicitly size them using JavaScript.
+// But height: 100% only works if the elements have position: absolute.
+// Therefore, we want to make sure that any element thus sized and positioned has a "positioned ancestor", 
+// to make sure that it positions relative to that ancestor, not some other ancestor (like the entire page)
+// that is outside of fo-sticky-note.
+
 
 export default {
     components: {
-        FoMarkdownNote,
-        ResizeObserver
+        FoMarkdownNote
+        // ResizeObserver
+    },
+    directives: {
+        resize
     },
 
     // Props are component data that can be set in the html tag using attributes.
@@ -30,10 +57,6 @@ export default {
             type: String,
             default: '#f3f3f3'
         }, 
-        // color: {
-        //     type: String,
-        //     default: '#000'
-        // },
         fontFamily: {
             // Corresponding attribute: font-family
             type: String,
@@ -60,7 +83,7 @@ export default {
     },
 
     data() { return {
-        blurHandlerEnabled:     true,
+        // blurHandlerEnabled:     true,
         buttonFontRatio:        0.9,
         buttonHeightRatio:      2.3,
         buttonWidthRatio:       2.5,
@@ -70,6 +93,7 @@ export default {
         colorButtonIconId:      this.id + '-color-button-icon',
         colorButtonId:          this.id + '-color-button',
         colorIcon:              colorIconBlack,
+        componentVisibility:    'hidden',
         closeButtonIconId:      this.id + '-close-button-icon',
         closeButtonId:          this.id + '-close-button',
         closeIcon:              closeIconBlack,
@@ -87,8 +111,10 @@ export default {
         titleBackgroundColor:   this.backgroundColor,
         titleDiv:               null,
         titleDivId:             this.id + '-title-div',
+        // titleDivVisibility:     'visible',
         titleInput:             null,
         titleInputId:           this.id + '-title-input',
+        // titleInputVisibility:   'visible',
         titleMinHeightRatio:    2.3,
         vueOuterDiv:            null
 
@@ -99,9 +125,14 @@ export default {
 
 
     template: `
-        <div :id='id' 
+        <!-- Everything starts out hidden and will be made visible all at once. -->
+
+<div :id='id' 
     class='outer-div' 
-    ref='outerDiv'>
+    v-resize:throttle.50='componentOnResize'
+    v-bind:style='{ visibility: componentVisibility }'
+    ref='vueOuterDiv'
+    >
 
     <div 
         :id='titleDivId' 
@@ -109,43 +140,53 @@ export default {
         class='title-div' 
         :title='noteTitle' 
         v-on:click='titleDivOnClick'
+        style='visibility: visible;'
         >{{noteTitle}}</div>
+
 
     <div :id='menuOuterDivId'
         ref='menuOuterDiv'
         v-on:mouseenter='menuOnMouseEnter'
-        v-on:mouseleave='menuOnMouseLeave'>
-
+        v-on:mouseleave='menuOnMouseLeave'
+        >
+    
         <div :id='menuDivId' 
             ref='menuDiv'
-            style='background-color: "red";'>
-
+            >
+    
             <div :id='colorButtonId' ref='colorButton'                        
                 v-on:mouseenter='colorOnMouseEnter'
                 v-on:mouseleave='colorOnMouseLeave'
-                v-on:click='colorButtonOnClick'>
-
+                v-on:click='colorButtonOnClick'
+                >
+    
                 <img :id='colorButtonIconId' ref='colorButtonIcon'/>
             </div>
             <div :id='closeButtonId' ref='closeButton'
                 v-on:mouseenter='closeOnMouseEnter'
                 v-on:mouseleave='closeOnMouseLeave'
-                v-on:click='closeButtonOnClick'>
-
+                v-on:click='closeButtonOnClick'
+                >
+    
                 <img :id='closeButtonIconId' ref='closeButtonIcon'/>
             </div>
         </div>
 
         <div :id='menuButtonId' 
             ref='menuButton'
-            v-on:click='menuButtonOnClick'>
+            v-on:click='menuButtonOnClick'
+            >
         
             <img :id='menuButtonIconId' ref='menuButtonIcon'/>
         </div>
         
     </div>
 
-    <div :id='markdownDivId' class='markdown-div' ref='markdownDiv'>
+    <div :id='markdownDivId' 
+         class='markdown-div' 
+         ref='markdownDiv'
+         v-bind:style='{ visibility: componentVisibility }'
+        >
         <fo-markdown-note 
             :id='foMarkdownNoteId'
             v-bind:note='note' 
@@ -155,7 +196,10 @@ export default {
             v-bind:font-family='fontFamily'
             v-bind:font-size='fontSize'
             v-on:click='noteOnClick($event)'
-            v-on:note-change='noteOnChange($event)'>
+            v-on:note-change='noteOnChange($event)'
+            v-bind:style='{ visibility: componentVisibility }'
+            ref='foMarkdownNote'
+            >
         </fo-markdown-note>
     </div>
 
@@ -172,53 +216,49 @@ export default {
         v-on:keydown='titleInputOnKeyDown'
         v-model='noteTitle' 
         style='visibility: hidden;'
-        ref='titleInput'>
+        ref='titleInput'
     ></textarea>
 
-    <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' />
+    <!-- <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' /> -->
 </div>
+<!-- <resize-observer id='parent-resize-observer' @notify='parentOnResize' /> -->
 
     `,
 
     mounted() {
         // console.info('fo-sticky-note.es6.js: mounted(): Start')
 
-        // Initialize convenience references.
+        // Initialize convenience references for which $refs won't work.
         // We prefer tu use Vue's built-in $refs feature but in some instances we have to make our own references.
-
-        // console.info('fo-sticky-note.es6.js: mounted(): this.foMarkdownNoteId = ' + this.foMarkdownNoteId)
-
+        
         this.foMarkdownNote = document.getElementById(this.foMarkdownNoteId)
+        // this.titleInput     = document.getElementById(this.titleInputId)
 
-        // console.info('fo-sticky-note.es6.js: mounted(): this.foMarkdownNote = ')
-        // console.info(this.foMarkdownNote)
+        // this.initializeResizeObserver()
 
-        // TODO: Use Vue's built-in $refs for all of these.
+        // // Wait a short time until the browser is able to display and resize the markdown div.
 
-        // console.info('fo-sticky-note.es6.js: mounted(): this.markdownDivId = ' + this.markdownDivId)
-    
-        this.titleDiv        = document.getElementById(this.titleDivId)
-        this.markdownDiv     = document.getElementById(this.markdownDivId)
-        this.vueOuterDiv     = document.getElementById(this.id)
+        // // TODO: Instead of using setTimeout, implement a 'componentReady' event in fo-markdown-note that we can 
+        // // use to definitively determine that the markdown note is visible.
 
-        // console.info('fo-sticky-note.es6.js: mounted(): this.markdownDiv = ')
-        // console.info(this.markdownDiv)
-
-        this.setColors()
-        this.initializeResizeObserver()
+        // In styling our various divs, we'll work from the outside in.
+        this.initializeHtmlStyles()
+        this.initializeVueOuterDivStyles()
         this.initializeTitleStyles()
         this.initializeMenuStyles()
         this.initializeMarkdownStyles()
-        this.initializeVueOuterDivStyles()
 
-        // Wait a short time until the browser is able to display and resize the markdown div.
+        this.setColors()
+        this.resizeElements()
 
-        // TODO: Instead of using setTimeout, implement a 'componentReady' event in fo-markdown-note that we can 
-        // use to definitively determine that the markdown note is visible.
 
-        setTimeout(() => { 
-            this.resizeElements()
-        }, 600) // 600 because fo-markdown-note waits 500 before making itself visible.
+        this.componentVisibility = 'visible'
+
+        let tis = this.$refs.titleInput.style
+        tis.visibility = 'hidden'
+
+        // setTimeout(() => { 
+        // }, 1000) // 600 because fo-markdown-note waits 500 before making itself visible.
         
         // console.info('fo-sticky-note.es6.js: mounted(): End')
     },
@@ -245,6 +285,17 @@ export default {
         noteTitle: function (newNoteTitle, oldNoteTitle) {
             // console.info('fo-sticky-note.js: watch: noteTitle: Fired! newNoteTitle = ' + newNoteTitle)
             this.$emit('title-change', newNoteTitle)
+        },
+
+        titleInputVisibility: function (newVisibility, oldVisibility) {
+            // console.info('fo-sticky-note.js: watch: titleInputVisibility: Fired!')
+            // console.info('fo-sticky-note.js: watch: titleInputVisibility: oldVisibility = ' + oldVisibility)
+            // console.info('fo-sticky-note.js: watch: titleInputVisibility: newVisibility = ' + newVisibility)
+
+            // For some unknown reason, v-bind doesn't work for the textarea.
+            // So we'll watch the data value and explicitly set the visibility when it changes.
+
+            this.$refs.titleInput.style.visibility = newVisibility
         }
     },
 
@@ -282,6 +333,18 @@ export default {
             setTimeout(() => { 
                 this.$refs.colorButton.style.backgroundColor = this.buttonHoverColor
             }, 100)
+        },
+
+        componentOnResize(e) {
+            // console.info('fo-sticky-note: componentOnResize(): Fired!  e = ')
+            // console.info(e)
+
+            let parentElement = this.$refs.vueOuterDiv.parentElement
+
+            // console.info('fo-sticky-note: componentOnResize(): parentElement = ')
+            // console.info(parentElement)
+
+            this.resizeElements()
         },
 
         closeOnMouseLeave() {
@@ -326,10 +389,16 @@ export default {
             })();
         },
 
+        initializeHtmlStyles() {
+            let html = document.getElementsByTagName('html')[0]
+            let htmlStyle = html.style
+            html.fontSize = '62.5%'
+        },
+
         initializeMenuStyles() {
             // Buttons are sized proportionally to the actual font size seen in the title.
             
-            let propertyValue = window.getComputedStyle(this.titleDiv).getPropertyValue('font-size')
+            let propertyValue = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('font-size')
             // console.info('fo-sticky-note.js: initializeButtonStyles(): propertyValue = ' + propertyValue)
 
             let actualFontSize = parseFloat(propertyValue)
@@ -405,7 +474,7 @@ export default {
                 cbis.right      = buttonPadding
                 cbis.opacity    = this.iconOpacityInactive  // Google material icons guideline
 
-            this.titleDiv.style.paddingRight = buttonWidth
+            this.$refs.titleDiv.style.paddingRight = buttonWidth
             this.$refs.titleInput.style.paddingRight = buttonWidth
 
             // console.info('fo-sticky-note.js: initializeMenuStyles(): menuWidth = ' + menuWidth)
@@ -432,7 +501,7 @@ export default {
                 crbs.position        = 'absolute'
                 crbs.height          = roundButtonHeight
                 crbs.width           = roundButtonWidth
-                crbs.top             = '0'
+                crbs.top             = '1px'
                 crbs.right           = colorButtonRight
                 crbs.border          = '0'
                 crbs.outline         = 'none'
@@ -444,7 +513,7 @@ export default {
                 crbs.alignItems     = 'center'
 
             let crbis = this.$refs.colorButtonIcon.style
-                // crbis.position   = 'relative'
+                crbis.position   = 'relative'
                 crbis.height     = imageHeight
                 crbis.width      = imageWidth
                 crbis.opacity    = this.iconOpacityInactive  // Google material icons guideline
@@ -457,7 +526,7 @@ export default {
                 clbs.position        = 'absolute'
                 clbs.height          = roundButtonHeight
                 clbs.width           = roundButtonWidth
-                clbs.top             = '0'
+                clbs.top             = '1px'
                 clbs.right           = closeButtonOffset
                 clbs.border          = '0'
                 clbs.outline         = 'none'
@@ -477,13 +546,14 @@ export default {
         },
 
         initializeMarkdownStyles() {
-            let markdownTop = (this.titleDiv.style.height - 1).toString() + 'px'
+            let markdownTop = (this.$refs.titleDiv.style.height - 1).toString() + 'px'
 
-            let mds = this.markdownDiv.style
+            // We do NOT use height = 100% here because we always size the height of the note elements explicitly.
+
+            let mds = this.$refs.markdownDiv.style
                 mds.backgroundColor = this.backgroundColor
                 mds.top = this.markdownTop
                 mds.position = 'absolute'
-                mds.height = '100%'
                 mds.width = '100%'
                 mds.zIndex = 0
 
@@ -492,29 +562,22 @@ export default {
                 fmns.width = '100%'
                 fmns.zIndex = 0
 
-            // console.info('fo-sticky-note: initializeMarkdownStyles(): this.foMarkdownNote =')
-            // console.info(this.foMarkdownNote)
-
         },
 
-        initializeResizeObserver() {
+        // initializeResizeObserver() {
 
-            // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.vueOuterDiv = ')
-            // console.info(this.vueOuterDiv)
+        //     // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.$refs.vueOuterDiv = ')
+        //     // console.info(this.$refs.vueOuterDiv)
 
-            let resizeObserver = document.getElementById('outer-div-resize-observer')
-            resizeObserver.style.position = 'relative'
+        //     let outerDivResizeObserver = document.getElementById('outer-div-resize-observer')
+        //     outerDivResizeObserver.style.position = 'relative'
 
-        },
-
-        initializeStyles() {
-            let html = document.getElementsByTagName('html')[0]
-            let htmlStyle = html.style
-            html.fontSize = '62.5%'
-        },
+        //     let parentResizeObserver = document.getElementById('parent-resize-observer')
+        //     parentResizeObserver.style.position = 'relative'
+        // },
 
         initializeTitleStyles() {
-            let tds = this.titleDiv.style
+            let tds = this.$refs.titleDiv.style
                 tds.width = '100%'
                 tds.position = 'absolute'
                 tds.fontSize = this.fontSize
@@ -551,9 +614,9 @@ export default {
         initializeVueOuterDivStyles() {
             // console.info('fo-sticky-note: initializeVueOuterDivStyles(): Start')
 
-            let ods = this.vueOuterDiv.style
-                ods.width = '100%'
-                ods.backgroundColor = "#FF0000"
+            let ods = this.$refs.vueOuterDiv.style
+                // position relative here allows the use of position absolute with descendents.
+                ods.position = 'relative'
 
             // console.info('fo-sticky-note: initializeVueOuterDivStyles(): End')
         },
@@ -562,13 +625,17 @@ export default {
             this.fadeIn(this.$refs.menuDiv)            
         },
 
-        pinColorButton(targetElement) {
-            this.$emit('color-button-click', targetElement)
-            this.menuIsPinned = true
+        menuFadeOut() {
+            this.$refs.menuButton.style.backgroundColor = this.titleBackgroundColor
+            this.$refs.menuButtonIcon.style.opacity = this.iconOpacityInactive
+            setTimeout(() => {
+                this.fadeOut(this.$refs.menuDiv)
+            }, 100)
         },
 
         menuOnMouseEnter() {
             // console.info('fo-sticky-note.js: menuOnMouseEnter(): Fired')
+            this.titleSetViewMode()
             this.$refs.menuButton.style.backgroundColor = this.buttonHoverColor
             this.$refs.menuButtonIcon.style.opacity = this.iconOpacityActive
             this.fadeIn(this.$refs.menuDiv)
@@ -578,12 +645,8 @@ export default {
             // console.info('fo-sticky-note.js: menuOnMouseLeave(): Fired; this.menuIsPinned = ' + this.menuIsPinned)
             if (this.menuIsPinned) {
                 // console.info('fo-sticky-note.js: menuOnMouseLeave(): Menu is pinned')
-            } else {                
-                this.$refs.menuButton.style.backgroundColor = this.titleBackgroundColor
-                this.$refs.menuButtonIcon.style.opacity = this.iconOpacityInactive
-                setTimeout(() => {
-                    this.fadeOut(this.$refs.menuDiv)
-                }, 100)
+            } else {
+                this.menuFadeOut()                
                 this.$emit('menu-mouse-leave', e)    
             }
         },
@@ -597,39 +660,72 @@ export default {
         noteOnClick(e) {
             // console.info('fo-sticky-note: noteOnClick(): Fired!')
             this.dismissColorButton(this.colorButton)
+            this.menuFadeOut()
+            this.titleSetViewMode()
         },
 
-        outerDivOnResize() {
-            // console.info('fo-sticky-note: outerDivOnResize(): Fired!')
+        parentOnResize() {
+            // console.info('fo-sticky-note: parentOnResize(): Fired!')
 
-            this.resizeElements()
+        },
+
+        pinColorButton(targetElement) {
+            this.$emit('color-button-click', targetElement)
+            this.menuIsPinned = true
         },
 
         resizeElements() {
+            // Since we can't use position: absolute for vueOuterDiv, we can't automatically resize its height
+            // using height: 100%. So, before doing anything else, set its height to match that of its immediate parent.
+
+            let parentElement = this.$refs.vueOuterDiv.parentElement
+            let parentElementHeight = window.getComputedStyle(parentElement).getPropertyValue('height')
+
+            // console.info('fo-sticky-note: resizeElements(): parentElementHeight = ' + parentElementHeight)
+
+            let ods = this.$refs.vueOuterDiv.style
+                ods.height = parentElementHeight
+
             // Get the dimensions from which others will be derived.
 
-            // console.info('fo-sticky-note: resizeElements(): Fired!')
+            // Everything is based on the font size.
 
-            let fontSize          = window.getComputedStyle(this.$refs.titleInput).getPropertyValue('font-size')
-            let titleHeight       = window.getComputedStyle(this.titleDiv).getPropertyValue('height')
-            let titleWidth        = window.getComputedStyle(this.titleDiv).getPropertyValue('width')
-            let markdownDivHeight = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('height')
-            let markdownDivWidth  = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('width')
+            let fontSize = window.getComputedStyle(this.$refs.titleInput).getPropertyValue('font-size')
+
+            // This is the most important dimension. It is the height of a single-line title,
+            // and is based on the fontSize.
+
+            let titleMinHeight = (parseFloat(fontSize) * this.titleMinHeightRatio).toString() + 'px'
+            // console.info('fo-sticky-note.js: resizeElements(): titleMinHeight = ' + titleMinHeight)
+
+            // let outerDivHeight    = window.getComputedStyle(this.$refs.vueOuterDiv).getPropertyValue('height')
+
+            // Title height will have been set by autogrow.
+
+            let titleHeight = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('height')
+            let titleWidth  = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('width')
+
+            // console.info('fo-sticky-note.js: resizeElements(): titleHeight (before) = ' + titleHeight)
+
+            let markdownDivWidth = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('width')
 
             // Derived dimensions.
 
+            let markdownDivHeight = (parseFloat(parentElementHeight) - parseFloat(titleHeight)).toString() + 'px'
             let markdownNoteTop = titleHeight
-            let markdownNoteHeight = (parseFloat(markdownDivHeight) - parseFloat(titleHeight)).toString() + 'px'
-            let titleMinHeight = (parseFloat(fontSize) * this.titleMinHeightRatio).toString() + 'px'
 
             // Set the dimensions.
 
-            let tds = this.titleDiv.style
+            // console.info('fo-sticky-note.js: resizeElements(): Setting markdownDiv height')
+            let mds = this.$refs.markdownDiv.style
+                mds.height = markdownDivHeight
+
+            let tds = this.$refs.titleDiv.style
                 tds.minHeight = titleMinHeight
 
-            let fmns = this.foMarkdownNote.style
+            let fmns = this.foMarkdownNote.style  // $refs doesn't work here, for some reason.
                 fmns.top = markdownNoteTop
-                fmns.height = markdownNoteHeight
+                fmns.height = markdownDivHeight
 
             let tis = this.$refs.titleInput.style
                 tis.height    = titleHeight
@@ -637,11 +733,6 @@ export default {
                 tis.width     = titleWidth
                 tis.minWidth  = titleWidth
                 tis.maxWidth  = titleWidth
-
-
-            // this.setTextareaHeight(this.$refs.titleInput, titleHeight)
-
-            this.$refs.titleInput.style.height = titleHeight
 
         },
 
@@ -651,10 +742,12 @@ export default {
             // We need to get a color that is an object, not a string. Do this by setting the color of an element,
             // then getting its computed style.
 
-            let mds = this.markdownDiv.style
+            // console.info('fo-sticky-note.js: setColors(): Setting markdownDiv backgroundColor')
+
+            let mds = this.$refs.markdownDiv.style
                 mds.backgroundColor = this.backgroundColor
 
-            let computedColor = getComputedStyle(this.markdownDiv).backgroundColor
+            let computedColor = getComputedStyle(this.$refs.markdownDiv).backgroundColor
 
             let computedColorString = this.rgb2hex(computedColor)
             this.titleBackgroundColor = this.shadeColor(computedColorString, -0.1)
@@ -691,7 +784,7 @@ export default {
             let muds = this.$refs.menuDiv.style
                 muds.backgroundColor = this.titleBackgroundColor
 
-            let tds = this.titleDiv.style
+            let tds = this.$refs.titleDiv.style
                 tds.backgroundColor = this.titleBackgroundColor
                 tds.color = this.color
 
@@ -704,21 +797,27 @@ export default {
             this.$refs.menuButtonIcon.src = this.menuIcon            
         },
 
-        stickyNoteOnBlur(e) {
-            // console.info('fo-sticky-note: stickyNoteOnBlur(): Start')
-            if (this.blurHandlerEnabled) {
-                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled; e = ')
-                // console.info(e)
+        // },
 
-                this.$emit('blur', e)
+        // stickyNoteOnBlur(e) {
+        //     // console.info('fo-sticky-note: stickyNoteOnBlur(): Fired!')
+        //     if (this.blurHandlerEnabled) {
+        //         // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled')
+        //         // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled; e = ')
+        //         // console.info(e)
 
-            } else {
-                // Re-enable blur handling. If it needs to be disabled again, onMouseDown will take care of that.
+        //         this.titleSetViewMode()
+        //         this.menuFadeOut()
 
-                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is NOT enabled')
-                this.blurHandlerEnabled = true                 
-            }
-        },
+        //         this.$emit('blur', e)
+
+        //     } else {
+        //         // Re-enable blur handling. If it needs to be disabled again, onMouseDown will take care of that.
+
+        //         // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is NOT enabled')
+        //         this.blurHandlerEnabled = true                 
+        //     }
+        // },
 
         stickyNoteOnKeyDown(e) {
             // console.info('fo-sticky-note: stickyNoteOnKeyDown: e.keyCode =')
@@ -736,37 +835,62 @@ export default {
             // console.info('fo-sticky-note: stickyNoteOnMouseUp(): Fired!')
         },
 
+
         titleDivOnClick(e) {
             // console.info('fo-sticky-note: titleDivOnClick(): Fired!') 
+            this.titleSetEditMode()
+        },
+
+        titleInputOnBlur(e) {
+            // console.info('fo-sticky-note: titleInputOnBlur(): Fired!') 
+            this.titleSetViewMode()
+            this.menuFadeOut()
+        },
+
+        titleInputOnKeyDown(e) {
+            if ((e.keyCode === 13) || (e.keyCode === 27)) {
+                e.preventDefault()
+                this.titleInputOnBlur(e)
+            }
+        },
+
+        titleSetEditMode() {
+            // console.info('fo-sticky-note: titleSetEditMode(): Start')
+
             this.dismissColorButton(this.colorButton)
 
-            let titleDivHeight = window.getComputedStyle(this.titleDiv).getPropertyValue('height')
+            let titleDivHeight = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('height')
 
-            let tds = this.titleDiv.style
+            let tds = this.$refs.titleDiv.style
             let tis = this.$refs.titleInput.style
+
+            // Note: switching visibility using a bound style doesn't work.
+            // So we'll stick to the good old-fashioned way.
 
             tds.visibility = 'hidden'
             tds.zIndex = 10
 
             tis.height = titleDivHeight
             tis.top = '0'
-            tis.visibility = 'visible'
             tis.zIndex = 20
+            tis.visibility = 'visible'
 
             // Place the cursor at the end of the text by clearing and setting the value.
-            // Save old value as we need to clear it
+            // Save old value as we need to clear it.
             let val = this.$refs.titleInput.value;
-  
+            // console.info('fo-sticky-note: titleSetEditMode(): val = ' + val)
+
+            
             // Focus the textarea, clear value, re-apply
             this.$refs.titleInput.focus()
             this.$refs.titleInput.value = ''
             this.$refs.titleInput.value = val
+
+
         },
 
-        titleInputOnBlur(e) {
-            // console.info('fo-sticky-note: titleInputOnBlur(): Fired!') 
-
-            let tds = this.titleDiv.style
+        titleSetViewMode() {
+            let tds = this.$refs.titleDiv.style
             let tis = this.$refs.titleInput.style
 
             tds.visibility = 'visible'
@@ -776,14 +900,6 @@ export default {
             tis.zIndex = 10
 
             this.resizeElements()
-
-        },
-
-        titleInputOnKeyDown(e) {
-            if ((e.keyCode === 13) || (e.keyCode === 27)) {
-                e.preventDefault()
-                this.titleInputOnBlur(e)
-            }
         },
 
         // Color utility methods, borrowed from tinycolor

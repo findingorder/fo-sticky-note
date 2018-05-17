@@ -121,6 +121,7 @@ let gridstackItemComponent = Vue.component('gridstackitem', {
 var vueModel = new Vue({
     el: '#app',
     components: {
+        'fo-sticky-note': FoStickyNote,
         'grid-stack-item': gridstackItemComponent,
         'swatches': foSwatchesWrapperMerged
     },
@@ -205,7 +206,8 @@ var vueModel = new Vue({
             // gridstack() method of a jQuery control.
 
             var options = {
-                verticalMargin: 10
+                verticalMargin: 10,
+                resizable: {handles: 'se, s, sw'}
             };
 
             $('.grid-stack').gridstack(options);

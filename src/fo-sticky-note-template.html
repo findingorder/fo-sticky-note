@@ -1,6 +1,11 @@
+<!-- Everything starts out hidden and will be made visible all at once. -->
+
 <div :id='id' 
     class='outer-div' 
-    ref='outerDiv'>
+    v-resize:throttle.50='componentOnResize'
+    v-bind:style='{ visibility: componentVisibility }'
+    ref='vueOuterDiv'
+    >
 
     <div 
         :id='titleDivId' 
@@ -8,43 +13,53 @@
         class='title-div' 
         :title='noteTitle' 
         v-on:click='titleDivOnClick'
+        style='visibility: visible;'
         >{{noteTitle}}</div>
+
 
     <div :id='menuOuterDivId'
         ref='menuOuterDiv'
         v-on:mouseenter='menuOnMouseEnter'
-        v-on:mouseleave='menuOnMouseLeave'>
-
+        v-on:mouseleave='menuOnMouseLeave'
+        >
+    
         <div :id='menuDivId' 
             ref='menuDiv'
-            style='background-color: "red";'>
-
+            >
+    
             <div :id='colorButtonId' ref='colorButton'                        
                 v-on:mouseenter='colorOnMouseEnter'
                 v-on:mouseleave='colorOnMouseLeave'
-                v-on:click='colorButtonOnClick'>
-
+                v-on:click='colorButtonOnClick'
+                >
+    
                 <img :id='colorButtonIconId' ref='colorButtonIcon'/>
             </div>
             <div :id='closeButtonId' ref='closeButton'
                 v-on:mouseenter='closeOnMouseEnter'
                 v-on:mouseleave='closeOnMouseLeave'
-                v-on:click='closeButtonOnClick'>
-
+                v-on:click='closeButtonOnClick'
+                >
+    
                 <img :id='closeButtonIconId' ref='closeButtonIcon'/>
             </div>
         </div>
 
         <div :id='menuButtonId' 
             ref='menuButton'
-            v-on:click='menuButtonOnClick'>
+            v-on:click='menuButtonOnClick'
+            >
         
             <img :id='menuButtonIconId' ref='menuButtonIcon'/>
         </div>
         
     </div>
 
-    <div :id='markdownDivId' class='markdown-div' ref='markdownDiv'>
+    <div :id='markdownDivId' 
+         class='markdown-div' 
+         ref='markdownDiv'
+         v-bind:style='{ visibility: componentVisibility }'
+        >
         <fo-markdown-note 
             :id='foMarkdownNoteId'
             v-bind:note='note' 
@@ -54,7 +69,10 @@
             v-bind:font-family='fontFamily'
             v-bind:font-size='fontSize'
             v-on:click='noteOnClick($event)'
-            v-on:note-change='noteOnChange($event)'>
+            v-on:note-change='noteOnChange($event)'
+            v-bind:style='{ visibility: componentVisibility }'
+            ref='foMarkdownNote'
+            >
         </fo-markdown-note>
     </div>
 
@@ -71,8 +89,9 @@
         v-on:keydown='titleInputOnKeyDown'
         v-model='noteTitle' 
         style='visibility: hidden;'
-        ref='titleInput'>
+        ref='titleInput'
     ></textarea>
 
-    <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' />
+    <!-- <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' /> -->
 </div>
+<!-- <resize-observer id='parent-resize-observer' @notify='parentOnResize' /> -->

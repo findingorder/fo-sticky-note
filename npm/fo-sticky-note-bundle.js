@@ -4310,8 +4310,7 @@ function patchDisplay(cm, updateNumbersFrom, dims) {
   // in display.lineDiv) with the view as we go.
   for (var i = 0; i < view.length; i++) {
     var lineView = view[i];
-    if (lineView.hidden) {
-    } else if (!lineView.node || lineView.node.parentNode != container) { // Not drawn yet
+    if (lineView.hidden) ; else if (!lineView.node || lineView.node.parentNode != container) { // Not drawn yet
       var node = buildLineElement(cm, lineView, lineN, dims);
       container.insertBefore(node, cur);
     } else { // Already drawn
@@ -9680,12 +9679,19 @@ return CodeMirror$1;
 })));
 });
 
+var codemirror$1 = /*#__PURE__*/Object.freeze({
+	default: codemirror,
+	__moduleExports: codemirror
+});
+
+var require$$0 = ( codemirror$1 && codemirror ) || codemirror$1;
+
 var continuelist = createCommonjsModule(function (module, exports) {
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
 
   var listRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/,
@@ -9771,7 +9777,7 @@ var continuelist = createCommonjsModule(function (module, exports) {
 
 
 
-codemirror.commands.tabAndIndentMarkdownList = function (cm) {
+require$$0.commands.tabAndIndentMarkdownList = function (cm) {
 	var ranges = cm.listSelections();
 	var pos = ranges[0].head;
 	var eolState = cm.getStateAfter(pos.line);
@@ -9791,7 +9797,7 @@ codemirror.commands.tabAndIndentMarkdownList = function (cm) {
 	}
 };
 
-codemirror.commands.shiftTabAndUnindentMarkdownList = function (cm) {
+require$$0.commands.shiftTabAndUnindentMarkdownList = function (cm) {
 	var ranges = cm.listSelections();
 	var pos = ranges[0].head;
 	var eolState = cm.getStateAfter(pos.line);
@@ -9816,7 +9822,7 @@ var fullscreen = createCommonjsModule(function (module, exports) {
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
 
   CodeMirror.defineOption("fullScreen", false, function(cm, val, old) {
@@ -9854,7 +9860,7 @@ var xml = createCommonjsModule(function (module, exports) {
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
 
 var htmlConfig = {
@@ -10247,12 +10253,17 @@ if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
 });
 });
 
+var xml$1 = /*#__PURE__*/Object.freeze({
+	default: xml,
+	__moduleExports: xml
+});
+
 var meta = createCommonjsModule(function (module, exports) {
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
 
   CodeMirror.modeInfo = [
@@ -10461,12 +10472,21 @@ var meta = createCommonjsModule(function (module, exports) {
 });
 });
 
+var meta$1 = /*#__PURE__*/Object.freeze({
+	default: meta,
+	__moduleExports: meta
+});
+
+var require$$1 = ( xml$1 && xml ) || xml$1;
+
+var require$$2 = ( meta$1 && meta ) || meta$1;
+
 var markdown = createCommonjsModule(function (module, exports) {
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror, xml, meta);
+  mod(require$$0, require$$1, require$$2);
 })(function(CodeMirror) {
 
 CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
@@ -11330,6 +11350,11 @@ CodeMirror.defineMIME("text/x-markdown", "markdown");
 });
 });
 
+var markdown$1 = /*#__PURE__*/Object.freeze({
+	default: markdown,
+	__moduleExports: markdown
+});
+
 var overlay = createCommonjsModule(function (module, exports) {
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
@@ -11344,7 +11369,7 @@ var overlay = createCommonjsModule(function (module, exports) {
 // combined.
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
 
 CodeMirror.overlayMode = function(base, overlay, combine) {
@@ -11417,12 +11442,17 @@ CodeMirror.overlayMode = function(base, overlay, combine) {
 });
 });
 
+var overlay$1 = /*#__PURE__*/Object.freeze({
+	default: overlay,
+	__moduleExports: overlay
+});
+
 var placeholder = createCommonjsModule(function (module, exports) {
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
   CodeMirror.defineOption("placeholder", "", function(cm, val, old) {
     var prev = old && old != CodeMirror.Init;
@@ -11489,7 +11519,7 @@ var markSelection = createCommonjsModule(function (module, exports) {
 // "CodeMirror-selectedtext" when the value is not a string.
 
 (function(mod) {
-  mod(codemirror);
+  mod(require$$0);
 })(function(CodeMirror) {
 
   CodeMirror.defineOption("styleSelectedText", false, function(cm, val, old) {
@@ -11594,12 +11624,16 @@ var markSelection = createCommonjsModule(function (module, exports) {
 });
 });
 
+var require$$1$1 = ( markdown$1 && markdown ) || markdown$1;
+
+var require$$2$1 = ( overlay$1 && overlay ) || overlay$1;
+
 var gfm = createCommonjsModule(function (module, exports) {
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
 (function(mod) {
-  mod(codemirror, markdown, overlay);
+  mod(require$$0, require$$1$1, require$$2$1);
 })(function(CodeMirror) {
 
 var urlRE = /^((?:(?:aaas?|about|acap|adiumxtra|af[ps]|aim|apt|attachment|aw|beshare|bitcoin|bolo|callto|cap|chrome(?:-extension)?|cid|coap|com-eventbrite-attendee|content|crid|cvs|data|dav|dict|dlna-(?:playcontainer|playsingle)|dns|doi|dtn|dvb|ed2k|facetime|feed|file|finger|fish|ftp|geo|gg|git|gizmoproject|go|gopher|gtalk|h323|hcp|https?|iax|icap|icon|im|imap|info|ipn|ipp|irc[6s]?|iris(?:\.beep|\.lwz|\.xpc|\.xpcs)?|itms|jar|javascript|jms|keyparc|lastfm|ldaps?|magnet|mailto|maps|market|message|mid|mms|ms-help|msnim|msrps?|mtqp|mumble|mupdate|mvn|news|nfs|nih?|nntp|notes|oid|opaquelocktoken|palm|paparazzi|platform|pop|pres|proxy|psyc|query|res(?:ource)?|rmi|rsync|rtmp|rtsp|secondlife|service|session|sftp|sgn|shttp|sieve|sips?|skype|sm[bs]|snmp|soap\.beeps?|soldat|spotify|ssh|steam|svn|tag|teamspeak|tel(?:net)?|tftp|things|thismessage|tip|tn3270|tv|udp|unreal|urn|ut2004|vemmi|ventrilo|view-source|webcal|wss?|wtai|wyciwyg|xcon(?:-userid)?|xfire|xmlrpc\.beeps?|xmpp|xri|ymsgr|z39\.50[rs]?):(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}\/)(?:[^\s()<>]|\([^\s()<>]*\))+(?:\([^\s()<>]*\)|[^\s`*!()\[\]{};:'".,<>?«»“”‘’]))/i;
@@ -11726,7 +11760,7 @@ var empty$1 = /*#__PURE__*/Object.freeze({
 	default: empty
 });
 
-var require$$0 = ( empty$1 && empty ) || empty$1;
+var require$$0$1 = ( empty$1 && empty ) || empty$1;
 
 var typo = createCommonjsModule(function (module) {
 /* globals chrome: false */
@@ -11988,7 +12022,7 @@ Typo.prototype = {
 		}
 		else if (typeof commonjsRequire !== 'undefined') {
 			// Node.js
-			var fs = require$$0;
+			var fs = require$$0$1;
 			
 			try {
 				if (fs.existsSync(path)) {
@@ -12661,6 +12695,13 @@ Typo.prototype = {
 }
 });
 
+var typo$1 = /*#__PURE__*/Object.freeze({
+	default: typo,
+	__moduleExports: typo
+});
+
+var Typo = ( typo$1 && typo ) || typo$1;
+
 // Requires
 
 
@@ -12699,7 +12740,7 @@ function CodeMirrorSpellChecker(options) {
 					CodeMirrorSpellChecker.num_loaded++;
 
 					if(CodeMirrorSpellChecker.num_loaded == 2) {
-						CodeMirrorSpellChecker.typo = new typo("en_US", CodeMirrorSpellChecker.aff_data, CodeMirrorSpellChecker.dic_data, {
+						CodeMirrorSpellChecker.typo = new Typo("en_US", CodeMirrorSpellChecker.aff_data, CodeMirrorSpellChecker.dic_data, {
 							platform: "any"
 						});
 					}
@@ -12718,7 +12759,7 @@ function CodeMirrorSpellChecker(options) {
 					CodeMirrorSpellChecker.num_loaded++;
 
 					if(CodeMirrorSpellChecker.num_loaded == 2) {
-						CodeMirrorSpellChecker.typo = new typo("en_US", CodeMirrorSpellChecker.aff_data, CodeMirrorSpellChecker.dic_data, {
+						CodeMirrorSpellChecker.typo = new Typo("en_US", CodeMirrorSpellChecker.aff_data, CodeMirrorSpellChecker.dic_data, {
 							platform: "any"
 						});
 					}
@@ -12774,6 +12815,11 @@ CodeMirrorSpellChecker.dic_data = "";
 
 // Export
 var spellChecker = CodeMirrorSpellChecker;
+
+var spellChecker$1 = /*#__PURE__*/Object.freeze({
+	default: spellChecker,
+	__moduleExports: spellChecker
+});
 
 var marked = createCommonjsModule(function (module, exports) {
 (function(root) {
@@ -14149,6 +14195,15 @@ marked.parse = marked;
 }
 })(commonjsGlobal || (typeof window !== 'undefined' ? window : commonjsGlobal));
 });
+
+var marked$1 = /*#__PURE__*/Object.freeze({
+	default: marked,
+	__moduleExports: marked
+});
+
+var CodeMirrorSpellChecker$1 = ( spellChecker$1 && spellChecker ) || spellChecker$1;
+
+var marked$2 = ( marked$1 && marked ) || marked$1;
 
 // Some variables
 var isMac = /Mac/.test(navigator.platform);
@@ -15526,7 +15581,7 @@ function SimpleMDE(options) {
  * Default markdown render.
  */
 SimpleMDE.prototype.markdown = function(text) {
-	if(marked) {
+	if(marked$2) {
 		// Initialize
 		var markedOptions = {};
 
@@ -15546,11 +15601,11 @@ SimpleMDE.prototype.markdown = function(text) {
 
 
 		// Set options
-		marked.setOptions(markedOptions);
+		marked$2.setOptions(markedOptions);
 
 
 		// Return
-		return marked(text);
+		return marked$2(text);
 	}
 };
 
@@ -15606,8 +15661,8 @@ SimpleMDE.prototype.render = function(el) {
 		backdrop.name = "gfm";
 		backdrop.gitHubSpice = false;
 
-		spellChecker({
-			codeMirrorInstance: codemirror
+		CodeMirrorSpellChecker$1({
+			codeMirrorInstance: require$$0
 		});
 	} else {
 		mode = options.parsingConfig;
@@ -15615,7 +15670,7 @@ SimpleMDE.prototype.render = function(el) {
 		mode.gitHubSpice = false;
 	}
 
-	this.codemirror = codemirror.fromTextArea(el, {
+	this.codemirror = require$$0.fromTextArea(el, {
 		mode: mode,
 		backdrop: backdrop,
 		theme: "paper",
@@ -16290,7 +16345,7 @@ var foMarkdownNote = {
 
     watch: {
         backgroundColor: function(newValue, oldValue) {
-            console.info('fo-markdown-note.js: watch: backgroundColor: Fired! newValue = ' + newValue);
+            // console.info('fo-markdown-note.js: watch: backgroundColor: Fired! newValue = ' + newValue)
             let cmds = this.codeMirrorDiv.style;
                 cmds.backgroundColor = this.backgroundColor;                    
 
@@ -16299,7 +16354,7 @@ var foMarkdownNote = {
 
         },
         color: function(newValue, oldValue) {
-            console.info('fo-markdown-note.js: watch: color: Fired! newValue = ' + newValue);
+            // console.info('fo-markdown-note.js: watch: color: Fired! newValue = ' + newValue)
             let cmds = this.codeMirrorDiv.style;
                 cmds.color = this.color;
 
@@ -16377,8 +16432,6 @@ var foMarkdownNote = {
                 }
 
                 // this.getCursorPosition()                
-            } else {
-                // console.info("fo-markdown-note: enterEditMode(): Not in preview mode, nothing to do")                    
             }
             // console.info("fo-markdown-note: enterEditMode(): End")
         },
@@ -16397,8 +16450,6 @@ var foMarkdownNote = {
 
                 this.changeHyperlinkTargets();
         
-            } else {
-                // console.info("fo-markdown-note: enterPreviewMode(): Currently in preview mode, nothing to do")                   
             }
             
             // console.info("fo-markdown-note: enterPreviewMode(): End")
@@ -16571,120 +16622,637 @@ function styleInject$1(css, ref) {
 var css$2 = ".resize-observer[data-v-b329ee4c]{position:absolute;top:0;left:0;z-index:-1;width:100%;height:100%;border:none;background-color:transparent;pointer-events:none;display:block;overflow:hidden;opacity:0}";
 styleInject$1(css$2);
 
-function getInternetExplorerVersion() {
-	var ua = window.navigator.userAgent;
+var commonjsGlobal$1 = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-	var msie = ua.indexOf('MSIE ');
-	if (msie > 0) {
-		// IE 10 or older => return version number
-		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-	}
-
-	var trident = ua.indexOf('Trident/');
-	if (trident > 0) {
-		// IE 11 => return version number
-		var rv = ua.indexOf('rv:');
-		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-	}
-
-	var edge = ua.indexOf('Edge/');
-	if (edge > 0) {
-		// Edge (IE 12+) => return version number
-		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-	}
-
-	// other browser
-	return -1;
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-var isIE = void 0;
-
-function initCompat() {
-	if (!initCompat.init) {
-		initCompat.init = true;
-		isIE = getInternetExplorerVersion() !== -1;
-	}
+function createCommonjsModule$1(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var ResizeObserver = { render: function render() {
-		var _vm = this;var _h = _vm.$createElement;var _c = _vm._self._c || _h;return _c('div', { staticClass: "resize-observer", attrs: { "tabindex": "-1" } });
-	}, staticRenderFns: [], _scopeId: 'data-v-b329ee4c',
-	name: 'resize-observer',
+var ResizeSensor = createCommonjsModule$1(function (module, exports) {
+(function (root, factory) {
+    if (typeof undefined === "function" && undefined.amd) {
+        undefined(factory);
+    } else {
+        module.exports = factory();
+    }
+}(commonjsGlobal$1, function () {
 
-	methods: {
-		notify: function notify() {
-			this.$emit('notify');
-		},
-		addResizeHandlers: function addResizeHandlers() {
-			this._resizeObject.contentDocument.defaultView.addEventListener('resize', this.notify);
-			if (this._w !== this.$el.offsetWidth || this._h !== this.$el.offsetHeight) {
-				this.notify();
-			}
-		},
-		removeResizeHandlers: function removeResizeHandlers() {
-			if (this._resizeObject && this._resizeObject.onload) {
-				if (!isIE && this._resizeObject.contentDocument) {
-					this._resizeObject.contentDocument.defaultView.removeEventListener('resize', this.notify);
-				}
-				delete this._resizeObject.onload;
-			}
-		}
-	},
+    //Make sure it does not throw in a SSR (Server Side Rendering) situation
+    if (typeof window === "undefined") {
+        return null;
+    }
+    // Only used for the dirty checking, so the event callback count is limted to max 1 call per fps per sensor.
+    // In combination with the event based resize sensor this saves cpu time, because the sensor is too fast and
+    // would generate too many unnecessary events.
+    var requestAnimationFrame = window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        function (fn) {
+            return window.setTimeout(fn, 20);
+        };
 
-	mounted: function mounted() {
-		var _this = this;
+    /**
+     * Iterate over each of the provided element(s).
+     *
+     * @param {HTMLElement|HTMLElement[]} elements
+     * @param {Function}                  callback
+     */
+    function forEachElement(elements, callback){
+        var elementsType = Object.prototype.toString.call(elements);
+        var isCollectionTyped = ('[object Array]' === elementsType
+            || ('[object NodeList]' === elementsType)
+            || ('[object HTMLCollection]' === elementsType)
+            || ('[object Object]' === elementsType)
+            || ('undefined' !== typeof jQuery && elements instanceof jQuery) //jquery
+            || ('undefined' !== typeof Elements && elements instanceof Elements) //mootools
+        );
+        var i = 0, j = elements.length;
+        if (isCollectionTyped) {
+            for (; i < j; i++) {
+                callback(elements[i]);
+            }
+        } else {
+            callback(elements);
+        }
+    }
 
-		initCompat();
-		this.$nextTick(function () {
-			_this._w = _this.$el.offsetWidth;
-			_this._h = _this.$el.offsetHeight;
-		});
-		var object = document.createElement('object');
-		this._resizeObject = object;
-		object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
-		object.setAttribute('aria-hidden', 'true');
-		object.setAttribute('tabindex', -1);
-		object.onload = this.addResizeHandlers;
-		object.type = 'text/html';
-		if (isIE) {
-			this.$el.appendChild(object);
-		}
-		object.data = 'about:blank';
-		if (!isIE) {
-			this.$el.appendChild(object);
-		}
-	},
-	beforeDestroy: function beforeDestroy() {
-		this.removeResizeHandlers();
-	}
+    /**
+     * Class for dimension change detection.
+     *
+     * @param {Element|Element[]|Elements|jQuery} element
+     * @param {Function} callback
+     *
+     * @constructor
+     */
+    var ResizeSensor = function(element, callback) {
+        /**
+         *
+         * @constructor
+         */
+        function EventQueue() {
+            var q = [];
+            this.add = function(ev) {
+                q.push(ev);
+            };
+
+            var i, j;
+            this.call = function() {
+                for (i = 0, j = q.length; i < j; i++) {
+                    q[i].call();
+                }
+            };
+
+            this.remove = function(ev) {
+                var newQueue = [];
+                for(i = 0, j = q.length; i < j; i++) {
+                    if(q[i] !== ev) newQueue.push(q[i]);
+                }
+                q = newQueue;
+            };
+
+            this.length = function() {
+                return q.length;
+            };
+        }
+
+        /**
+         * @param {HTMLElement} element
+         * @param {String}      prop
+         * @returns {String|Number}
+         */
+        function getComputedStyle(element, prop) {
+            if (element.currentStyle) {
+                return element.currentStyle[prop];
+            } else if (window.getComputedStyle) {
+                return window.getComputedStyle(element, null).getPropertyValue(prop);
+            } else {
+                return element.style[prop];
+            }
+        }
+
+        /**
+         *
+         * @param {HTMLElement} element
+         * @param {Function}    resized
+         */
+        function attachResizeEvent(element, resized) {
+            if (!element.resizedAttached) {
+                element.resizedAttached = new EventQueue();
+                element.resizedAttached.add(resized);
+            } else if (element.resizedAttached) {
+                element.resizedAttached.add(resized);
+                return;
+            }
+
+            element.resizeSensor = document.createElement('div');
+            element.resizeSensor.className = 'resize-sensor';
+            var style = 'position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;';
+            var styleChild = 'position: absolute; left: 0; top: 0; transition: 0s;';
+
+            element.resizeSensor.style.cssText = style;
+            element.resizeSensor.innerHTML =
+                '<div class="resize-sensor-expand" style="' + style + '">' +
+                    '<div style="' + styleChild + '"></div>' +
+                '</div>' +
+                '<div class="resize-sensor-shrink" style="' + style + '">' +
+                    '<div style="' + styleChild + ' width: 200%; height: 200%"></div>' +
+                '</div>';
+            element.appendChild(element.resizeSensor);
+
+            if (getComputedStyle(element, 'position') == 'static') {
+                element.style.position = 'relative';
+            }
+
+            var expand = element.resizeSensor.childNodes[0];
+            var expandChild = expand.childNodes[0];
+            var shrink = element.resizeSensor.childNodes[1];
+            var dirty, rafId, newWidth, newHeight;
+            var lastWidth = element.offsetWidth;
+            var lastHeight = element.offsetHeight;
+
+            var reset = function() {
+                expandChild.style.width = '100000px';
+                expandChild.style.height = '100000px';
+
+                expand.scrollLeft = 100000;
+                expand.scrollTop = 100000;
+
+                shrink.scrollLeft = 100000;
+                shrink.scrollTop = 100000;
+            };
+
+            reset();
+
+            var onResized = function() {
+                rafId = 0;
+
+                if (!dirty) return;
+
+                lastWidth = newWidth;
+                lastHeight = newHeight;
+
+                if (element.resizedAttached) {
+                    element.resizedAttached.call();
+                }
+            };
+
+            var onScroll = function() {
+                newWidth = element.offsetWidth;
+                newHeight = element.offsetHeight;
+                dirty = newWidth != lastWidth || newHeight != lastHeight;
+
+                if (dirty && !rafId) {
+                    rafId = requestAnimationFrame(onResized);
+                }
+
+                reset();
+            };
+
+            var addEvent = function(el, name, cb) {
+                if (el.attachEvent) {
+                    el.attachEvent('on' + name, cb);
+                } else {
+                    el.addEventListener(name, cb);
+                }
+            };
+
+            addEvent(expand, 'scroll', onScroll);
+            addEvent(shrink, 'scroll', onScroll);
+        }
+
+        forEachElement(element, function(elem){
+            attachResizeEvent(elem, callback);
+        });
+
+        this.detach = function(ev) {
+            ResizeSensor.detach(element, ev);
+        };
+    };
+
+    ResizeSensor.detach = function(element, ev) {
+        forEachElement(element, function(elem){
+            if(elem.resizedAttached && typeof ev == "function"){
+                elem.resizedAttached.remove(ev);
+                if(elem.resizedAttached.length()) return;
+            }
+            if (elem.resizeSensor) {
+                if (elem.contains(elem.resizeSensor)) {
+                    elem.removeChild(elem.resizeSensor);
+                }
+                delete elem.resizeSensor;
+                delete elem.resizedAttached;
+            }
+        });
+    };
+
+    return ResizeSensor;
+
+}));
+});
+
+var ResizeSensor$1 = /*#__PURE__*/Object.freeze({
+  default: ResizeSensor,
+  __moduleExports: ResizeSensor
+});
+
+/**
+ * lodash (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof commonjsGlobal$1 == 'object' && commonjsGlobal$1 && commonjsGlobal$1.Object === Object && commonjsGlobal$1;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred invocation.
+ */
+var now = function() {
+  return root.Date.now();
 };
 
-// Install the components
-function install(Vue) {
-	Vue.component('resize-observer', ResizeObserver);
-	/* -- Add more components here -- */
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide `options` to indicate whether `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent
+ * calls to the debounced function return the result of the last `func`
+ * invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber(wait) || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        result = wait - timeSinceLastCall;
+
+    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now());
+  }
+
+  function debounced() {
+    var time = now(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
 }
 
-/* -- Plugin definition & Auto-install -- */
-/* You shouldn't have to modify the code below */
-
-// Plugin
-var plugin = {
-	// eslint-disable-next-line no-undef
-	version: "0.4.4",
-	install: install
-};
-
-// Auto-install
-var GlobalVue = null;
-if (typeof window !== 'undefined') {
-	GlobalVue = window.Vue;
-} else if (typeof global !== 'undefined') {
-	GlobalVue = global.Vue;
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
 }
-if (GlobalVue) {
-	GlobalVue.use(plugin);
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return !!value && typeof value == 'object';
 }
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && objectToString.call(value) == symbolTag);
+}
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+var lodash_debounce = debounce;
+
+var lodash_debounce$1 = /*#__PURE__*/Object.freeze({
+  default: lodash_debounce,
+  __moduleExports: lodash_debounce
+});
+
+var require$$0$2 = ( ResizeSensor$1 && ResizeSensor ) || ResizeSensor$1;
+
+var require$$1$2 = ( lodash_debounce$1 && lodash_debounce ) || lodash_debounce$1;
+
+var Vueresize = createCommonjsModule$1(function (module, exports) {
+!function(t,n){module.exports=n(require$$0$2,require$$1$2);}(commonjsGlobal$1,function(t,n){return function(t){function n(r){if(e[r])return e[r].exports;var o=e[r]={exports:{},id:r,loaded:!1};return t[r].call(o.exports,o,o.exports,n),o.loaded=!0,o.exports}var e={};return n.m=t,n.c=e,n.p="/",n(0)}([function(t,n,e){var r,o,u;!function(i,c){o=[t,n,e(9),e(36),e(37)],r=c,u="function"==typeof r?r.apply(n,o):r,!(void 0!==u&&(t.exports=u));}(this,function(t,n,e,r,o){function u(t){return t&&t.__esModule?t:{default:t}}function i(t){if(!t)return l;var n=(0, c.default)(t);return n.length?Number(n[0]):l}Object.defineProperty(n,"__esModule",{value:!0});var c=u(e),f=u(r),s=u(o),a=s.default.debounce,p=void 0===a?s.default:a,l=150;n.default={inserted:function(t,n){var e=n.value,r=n.arg,o=n.modifiers;e||console.warn("method or v-resize is not implemented as to $el");var u=function(){return e(t)};switch(r){case"debounce":u=p(function(){return e(t)},i(o));break;case"throttle":var c=i(o);u=p(function(){return e(t)},c,{leading:!0,trailing:!0,maxWait:c});}new f.default(t,u);}},t.exports=n.default;});},function(t,n){var e=t.exports={version:"2.4.0"};"number"==typeof __e&&(__e=e);},function(t,n,e){t.exports=!e(3)(function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a});},function(t,n){t.exports=function(t){try{return!!t()}catch(t){return!0}};},function(t,n){var e=t.exports="undefined"!=typeof window&&window.Math==Math?window:"undefined"!=typeof self&&self.Math==Math?self:Function("return this")();"number"==typeof __g&&(__g=e);},function(t,n){t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t};},function(t,n){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t};},function(t,n){var e=Math.ceil,r=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?r:e)(t)};},function(t,n,e){var r=e(22),o=e(6);t.exports=function(t){return r(o(t))};},function(t,n,e){t.exports={default:e(10),__esModule:!0};},function(t,n,e){e(35),t.exports=e(1).Object.keys;},function(t,n){t.exports=function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!");return t};},function(t,n,e){var r=e(5);t.exports=function(t){if(!r(t))throw TypeError(t+" is not an object!");return t};},function(t,n,e){var r=e(8),o=e(31),u=e(30);t.exports=function(t){return function(n,e,i){var c,f=r(n),s=o(f.length),a=u(i,s);if(t&&e!=e){for(;s>a;)if(c=f[a++],c!=c)return!0}else for(;s>a;a++)if((t||a in f)&&f[a]===e)return t||a||0;return!t&&-1}};},function(t,n){var e={}.toString;t.exports=function(t){return e.call(t).slice(8,-1)};},function(t,n,e){var r=e(11);t.exports=function(t,n,e){if(r(t),void 0===n)return t;switch(e){case 1:return function(e){return t.call(n,e)};case 2:return function(e,r){return t.call(n,e,r)};case 3:return function(e,r,o){return t.call(n,e,r,o)}}return function(){return t.apply(n,arguments)}};},function(t,n,e){var r=e(5),o=e(4).document,u=r(o)&&r(o.createElement);t.exports=function(t){return u?o.createElement(t):{}};},function(t,n){t.exports="constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",");},function(t,n,e){var r=e(4),o=e(1),u=e(15),i=e(20),c="prototype",f=function(t,n,e){var s,a,p,l=t&f.F,v=t&f.G,d=t&f.S,x=t&f.P,y=t&f.B,h=t&f.W,b=v?o:o[n]||(o[n]={}),m=b[c],j=v?r:d?r[n]:(r[n]||{})[c];v&&(e=n);for(s in e)a=!l&&j&&void 0!==j[s],a&&s in b||(p=a?j[s]:e[s],b[s]=v&&"function"!=typeof j[s]?e[s]:y&&a?u(p,r):h&&j[s]==p?function(t){var n=function(n,e,r){if(this instanceof t){switch(arguments.length){case 0:return new t;case 1:return new t(n);case 2:return new t(n,e)}return new t(n,e,r)}return t.apply(this,arguments)};return n[c]=t[c],n}(p):x&&"function"==typeof p?u(Function.call,p):p,x&&((b.virtual||(b.virtual={}))[s]=p,t&f.R&&m&&!m[s]&&i(m,s,p)));};f.F=1,f.G=2,f.S=4,f.P=8,f.B=16,f.W=32,f.U=64,f.R=128,t.exports=f;},function(t,n){var e={}.hasOwnProperty;t.exports=function(t,n){return e.call(t,n)};},function(t,n,e){var r=e(23),o=e(27);t.exports=e(2)?function(t,n,e){return r.f(t,n,o(1,e))}:function(t,n,e){return t[n]=e,t};},function(t,n,e){t.exports=!e(2)&&!e(3)(function(){return 7!=Object.defineProperty(e(16)("div"),"a",{get:function(){return 7}}).a});},function(t,n,e){var r=e(14);t.exports=Object("z").propertyIsEnumerable(0)?Object:function(t){return"String"==r(t)?t.split(""):Object(t)};},function(t,n,e){var r=e(12),o=e(21),u=e(33),i=Object.defineProperty;n.f=e(2)?Object.defineProperty:function(t,n,e){if(r(t),n=u(n,!0),r(e),o)try{return i(t,n,e)}catch(t){}if("get"in e||"set"in e)throw TypeError("Accessors not supported!");return"value"in e&&(t[n]=e.value),t};},function(t,n,e){var r=e(19),o=e(8),u=e(13)(!1),i=e(28)("IE_PROTO");t.exports=function(t,n){var e,c=o(t),f=0,s=[];for(e in c)e!=i&&r(c,e)&&s.push(e);for(;n.length>f;)r(c,e=n[f++])&&(~u(s,e)||s.push(e));return s};},function(t,n,e){var r=e(24),o=e(17);t.exports=Object.keys||function(t){return r(t,o)};},function(t,n,e){var r=e(18),o=e(1),u=e(3);t.exports=function(t,n){var e=(o.Object||{})[t]||Object[t],i={};i[t]=n(e),r(r.S+r.F*u(function(){e(1);}),"Object",i);};},function(t,n){t.exports=function(t,n){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:n}};},function(t,n,e){var r=e(29)("keys"),o=e(34);t.exports=function(t){return r[t]||(r[t]=o(t))};},function(t,n,e){var r=e(4),o="__core-js_shared__",u=r[o]||(r[o]={});t.exports=function(t){return u[t]||(u[t]={})};},function(t,n,e){var r=e(7),o=Math.max,u=Math.min;t.exports=function(t,n){return t=r(t),t<0?o(t+n,0):u(t,n)};},function(t,n,e){var r=e(7),o=Math.min;t.exports=function(t){return t>0?o(r(t),9007199254740991):0};},function(t,n,e){var r=e(6);t.exports=function(t){return Object(r(t))};},function(t,n,e){var r=e(5);t.exports=function(t,n){if(!r(t))return t;var e,o;if(n&&"function"==typeof(e=t.toString)&&!r(o=e.call(t)))return o;if("function"==typeof(e=t.valueOf)&&!r(o=e.call(t)))return o;if(!n&&"function"==typeof(e=t.toString)&&!r(o=e.call(t)))return o;throw TypeError("Can't convert object to primitive value")};},function(t,n){var e=0,r=Math.random();t.exports=function(t){return"Symbol(".concat(void 0===t?"":t,")_",(++e+r).toString(36))};},function(t,n,e){var r=e(32),o=e(25);e(26)("keys",function(){return function(t){return o(r(t))}});},function(n,e){n.exports=t;},function(t,e){t.exports=n;}])});
+
+});
+
+var resize = unwrapExports(Vueresize);
+var Vueresize_1 = Vueresize.Vueresize;
 
 (function($)
 {
@@ -16777,11 +17345,28 @@ var colorIconWhite = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWln
 
 // console.info("fo-sticky-note.es6.js: Start")
 
+// About absolute positioning:
+// w3schools.com documentation states:
+//     An element with position: absolute; is positioned relative to the nearest positioned ancestor 
+//     (instead of positioned relative to the viewport, like fixed).
+//     However; if an absolute positioned element has no positioned ancestors, it uses the document body, 
+//     and moves along with page scrolling.
+//     Note: A "positioned" element is one whose position is anything except static.
+//
+// We want to use height: 100% on some elements to avoid having to explicitly size them using JavaScript.
+// But height: 100% only works if the elements have position: absolute.
+// Therefore, we want to make sure that any element thus sized and positioned has a "positioned ancestor", 
+// to make sure that it positions relative to that ancestor, not some other ancestor (like the entire page)
+// that is outside of fo-sticky-note.
+
 
 var foStickyNoteMerged = {
     components: {
-        FoMarkdownNote: foMarkdownNote,
-        ResizeObserver
+        FoMarkdownNote: foMarkdownNote
+        // ResizeObserver
+    },
+    directives: {
+        resize
     },
 
     // Props are component data that can be set in the html tag using attributes.
@@ -16793,10 +17378,6 @@ var foStickyNoteMerged = {
             type: String,
             default: '#f3f3f3'
         }, 
-        // color: {
-        //     type: String,
-        //     default: '#000'
-        // },
         fontFamily: {
             // Corresponding attribute: font-family
             type: String,
@@ -16823,7 +17404,7 @@ var foStickyNoteMerged = {
     },
 
     data() { return {
-        blurHandlerEnabled:     true,
+        // blurHandlerEnabled:     true,
         buttonFontRatio:        0.9,
         buttonHeightRatio:      2.3,
         buttonWidthRatio:       2.5,
@@ -16833,6 +17414,7 @@ var foStickyNoteMerged = {
         colorButtonIconId:      this.id + '-color-button-icon',
         colorButtonId:          this.id + '-color-button',
         colorIcon:              colorIconBlack,
+        componentVisibility:    'hidden',
         closeButtonIconId:      this.id + '-close-button-icon',
         closeButtonId:          this.id + '-close-button',
         closeIcon:              closeIconBlack,
@@ -16850,8 +17432,10 @@ var foStickyNoteMerged = {
         titleBackgroundColor:   this.backgroundColor,
         titleDiv:               null,
         titleDivId:             this.id + '-title-div',
+        // titleDivVisibility:     'visible',
         titleInput:             null,
         titleInputId:           this.id + '-title-input',
+        // titleInputVisibility:   'visible',
         titleMinHeightRatio:    2.3,
         vueOuterDiv:            null
 
@@ -16862,9 +17446,14 @@ var foStickyNoteMerged = {
 
 
     template: `
-        <div :id='id' 
+        <!-- Everything starts out hidden and will be made visible all at once. -->
+
+<div :id='id' 
     class='outer-div' 
-    ref='outerDiv'>
+    v-resize:throttle.50='componentOnResize'
+    v-bind:style='{ visibility: componentVisibility }'
+    ref='vueOuterDiv'
+    >
 
     <div 
         :id='titleDivId' 
@@ -16872,43 +17461,53 @@ var foStickyNoteMerged = {
         class='title-div' 
         :title='noteTitle' 
         v-on:click='titleDivOnClick'
+        style='visibility: visible;'
         >{{noteTitle}}</div>
+
 
     <div :id='menuOuterDivId'
         ref='menuOuterDiv'
         v-on:mouseenter='menuOnMouseEnter'
-        v-on:mouseleave='menuOnMouseLeave'>
-
+        v-on:mouseleave='menuOnMouseLeave'
+        >
+    
         <div :id='menuDivId' 
             ref='menuDiv'
-            style='background-color: "red";'>
-
+            >
+    
             <div :id='colorButtonId' ref='colorButton'                        
                 v-on:mouseenter='colorOnMouseEnter'
                 v-on:mouseleave='colorOnMouseLeave'
-                v-on:click='colorButtonOnClick'>
-
+                v-on:click='colorButtonOnClick'
+                >
+    
                 <img :id='colorButtonIconId' ref='colorButtonIcon'/>
             </div>
             <div :id='closeButtonId' ref='closeButton'
                 v-on:mouseenter='closeOnMouseEnter'
                 v-on:mouseleave='closeOnMouseLeave'
-                v-on:click='closeButtonOnClick'>
-
+                v-on:click='closeButtonOnClick'
+                >
+    
                 <img :id='closeButtonIconId' ref='closeButtonIcon'/>
             </div>
         </div>
 
         <div :id='menuButtonId' 
             ref='menuButton'
-            v-on:click='menuButtonOnClick'>
+            v-on:click='menuButtonOnClick'
+            >
         
             <img :id='menuButtonIconId' ref='menuButtonIcon'/>
         </div>
         
     </div>
 
-    <div :id='markdownDivId' class='markdown-div' ref='markdownDiv'>
+    <div :id='markdownDivId' 
+         class='markdown-div' 
+         ref='markdownDiv'
+         v-bind:style='{ visibility: componentVisibility }'
+        >
         <fo-markdown-note 
             :id='foMarkdownNoteId'
             v-bind:note='note' 
@@ -16918,7 +17517,10 @@ var foStickyNoteMerged = {
             v-bind:font-family='fontFamily'
             v-bind:font-size='fontSize'
             v-on:click='noteOnClick($event)'
-            v-on:note-change='noteOnChange($event)'>
+            v-on:note-change='noteOnChange($event)'
+            v-bind:style='{ visibility: componentVisibility }'
+            ref='foMarkdownNote'
+            >
         </fo-markdown-note>
     </div>
 
@@ -16935,53 +17537,49 @@ var foStickyNoteMerged = {
         v-on:keydown='titleInputOnKeyDown'
         v-model='noteTitle' 
         style='visibility: hidden;'
-        ref='titleInput'>
+        ref='titleInput'
     ></textarea>
 
-    <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' />
+    <!-- <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' /> -->
 </div>
+<!-- <resize-observer id='parent-resize-observer' @notify='parentOnResize' /> -->
 
     `,
 
     mounted() {
         // console.info('fo-sticky-note.es6.js: mounted(): Start')
 
-        // Initialize convenience references.
+        // Initialize convenience references for which $refs won't work.
         // We prefer tu use Vue's built-in $refs feature but in some instances we have to make our own references.
-
-        // console.info('fo-sticky-note.es6.js: mounted(): this.foMarkdownNoteId = ' + this.foMarkdownNoteId)
-
+        
         this.foMarkdownNote = document.getElementById(this.foMarkdownNoteId);
+        // this.titleInput     = document.getElementById(this.titleInputId)
 
-        // console.info('fo-sticky-note.es6.js: mounted(): this.foMarkdownNote = ')
-        // console.info(this.foMarkdownNote)
+        // this.initializeResizeObserver()
 
-        // TODO: Use Vue's built-in $refs for all of these.
+        // // Wait a short time until the browser is able to display and resize the markdown div.
 
-        // console.info('fo-sticky-note.es6.js: mounted(): this.markdownDivId = ' + this.markdownDivId)
-    
-        this.titleDiv        = document.getElementById(this.titleDivId);
-        this.markdownDiv     = document.getElementById(this.markdownDivId);
-        this.vueOuterDiv     = document.getElementById(this.id);
+        // // TODO: Instead of using setTimeout, implement a 'componentReady' event in fo-markdown-note that we can 
+        // // use to definitively determine that the markdown note is visible.
 
-        // console.info('fo-sticky-note.es6.js: mounted(): this.markdownDiv = ')
-        // console.info(this.markdownDiv)
-
-        this.setColors();
-        this.initializeResizeObserver();
+        // In styling our various divs, we'll work from the outside in.
+        this.initializeHtmlStyles();
+        this.initializeVueOuterDivStyles();
         this.initializeTitleStyles();
         this.initializeMenuStyles();
         this.initializeMarkdownStyles();
-        this.initializeVueOuterDivStyles();
 
-        // Wait a short time until the browser is able to display and resize the markdown div.
+        this.setColors();
+        this.resizeElements();
 
-        // TODO: Instead of using setTimeout, implement a 'componentReady' event in fo-markdown-note that we can 
-        // use to definitively determine that the markdown note is visible.
 
-        setTimeout(() => { 
-            this.resizeElements();
-        }, 600); // 600 because fo-markdown-note waits 500 before making itself visible.
+        this.componentVisibility = 'visible';
+
+        let tis = this.$refs.titleInput.style;
+        tis.visibility = 'hidden';
+
+        // setTimeout(() => { 
+        // }, 1000) // 600 because fo-markdown-note waits 500 before making itself visible.
         
         // console.info('fo-sticky-note.es6.js: mounted(): End')
     },
@@ -17008,6 +17606,17 @@ var foStickyNoteMerged = {
         noteTitle: function (newNoteTitle, oldNoteTitle) {
             // console.info('fo-sticky-note.js: watch: noteTitle: Fired! newNoteTitle = ' + newNoteTitle)
             this.$emit('title-change', newNoteTitle);
+        },
+
+        titleInputVisibility: function (newVisibility, oldVisibility) {
+            // console.info('fo-sticky-note.js: watch: titleInputVisibility: Fired!')
+            // console.info('fo-sticky-note.js: watch: titleInputVisibility: oldVisibility = ' + oldVisibility)
+            // console.info('fo-sticky-note.js: watch: titleInputVisibility: newVisibility = ' + newVisibility)
+
+            // For some unknown reason, v-bind doesn't work for the textarea.
+            // So we'll watch the data value and explicitly set the visibility when it changes.
+
+            this.$refs.titleInput.style.visibility = newVisibility;
         }
     },
 
@@ -17045,6 +17654,18 @@ var foStickyNoteMerged = {
             setTimeout(() => { 
                 this.$refs.colorButton.style.backgroundColor = this.buttonHoverColor;
             }, 100);
+        },
+
+        componentOnResize(e) {
+            // console.info('fo-sticky-note: componentOnResize(): Fired!  e = ')
+            // console.info(e)
+
+            let parentElement = this.$refs.vueOuterDiv.parentElement;
+
+            // console.info('fo-sticky-note: componentOnResize(): parentElement = ')
+            // console.info(parentElement)
+
+            this.resizeElements();
         },
 
         closeOnMouseLeave() {
@@ -17089,10 +17710,16 @@ var foStickyNoteMerged = {
             })();
         },
 
+        initializeHtmlStyles() {
+            let html = document.getElementsByTagName('html')[0];
+            let htmlStyle = html.style;
+            html.fontSize = '62.5%';
+        },
+
         initializeMenuStyles() {
             // Buttons are sized proportionally to the actual font size seen in the title.
             
-            let propertyValue = window.getComputedStyle(this.titleDiv).getPropertyValue('font-size');
+            let propertyValue = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('font-size');
             // console.info('fo-sticky-note.js: initializeButtonStyles(): propertyValue = ' + propertyValue)
 
             let actualFontSize = parseFloat(propertyValue);
@@ -17168,7 +17795,7 @@ var foStickyNoteMerged = {
                 cbis.right      = buttonPadding;
                 cbis.opacity    = this.iconOpacityInactive;  // Google material icons guideline
 
-            this.titleDiv.style.paddingRight = buttonWidth;
+            this.$refs.titleDiv.style.paddingRight = buttonWidth;
             this.$refs.titleInput.style.paddingRight = buttonWidth;
 
             // console.info('fo-sticky-note.js: initializeMenuStyles(): menuWidth = ' + menuWidth)
@@ -17195,7 +17822,7 @@ var foStickyNoteMerged = {
                 crbs.position        = 'absolute';
                 crbs.height          = roundButtonHeight;
                 crbs.width           = roundButtonWidth;
-                crbs.top             = '0';
+                crbs.top             = '1px';
                 crbs.right           = colorButtonRight;
                 crbs.border          = '0';
                 crbs.outline         = 'none';
@@ -17207,7 +17834,7 @@ var foStickyNoteMerged = {
                 crbs.alignItems     = 'center';
 
             let crbis = this.$refs.colorButtonIcon.style;
-                // crbis.position   = 'relative'
+                crbis.position   = 'relative';
                 crbis.height     = imageHeight;
                 crbis.width      = imageWidth;
                 crbis.opacity    = this.iconOpacityInactive;  // Google material icons guideline
@@ -17220,7 +17847,7 @@ var foStickyNoteMerged = {
                 clbs.position        = 'absolute';
                 clbs.height          = roundButtonHeight;
                 clbs.width           = roundButtonWidth;
-                clbs.top             = '0';
+                clbs.top             = '1px';
                 clbs.right           = closeButtonOffset;
                 clbs.border          = '0';
                 clbs.outline         = 'none';
@@ -17240,13 +17867,14 @@ var foStickyNoteMerged = {
         },
 
         initializeMarkdownStyles() {
-            let markdownTop = (this.titleDiv.style.height - 1).toString() + 'px';
+            let markdownTop = (this.$refs.titleDiv.style.height - 1).toString() + 'px';
 
-            let mds = this.markdownDiv.style;
+            // We do NOT use height = 100% here because we always size the height of the note elements explicitly.
+
+            let mds = this.$refs.markdownDiv.style;
                 mds.backgroundColor = this.backgroundColor;
                 mds.top = this.markdownTop;
                 mds.position = 'absolute';
-                mds.height = '100%';
                 mds.width = '100%';
                 mds.zIndex = 0;
 
@@ -17255,29 +17883,22 @@ var foStickyNoteMerged = {
                 fmns.width = '100%';
                 fmns.zIndex = 0;
 
-            // console.info('fo-sticky-note: initializeMarkdownStyles(): this.foMarkdownNote =')
-            // console.info(this.foMarkdownNote)
-
         },
 
-        initializeResizeObserver() {
+        // initializeResizeObserver() {
 
-            // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.vueOuterDiv = ')
-            // console.info(this.vueOuterDiv)
+        //     // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.$refs.vueOuterDiv = ')
+        //     // console.info(this.$refs.vueOuterDiv)
 
-            let resizeObserver = document.getElementById('outer-div-resize-observer');
-            resizeObserver.style.position = 'relative';
+        //     let outerDivResizeObserver = document.getElementById('outer-div-resize-observer')
+        //     outerDivResizeObserver.style.position = 'relative'
 
-        },
-
-        initializeStyles() {
-            let html = document.getElementsByTagName('html')[0];
-            let htmlStyle = html.style;
-            html.fontSize = '62.5%';
-        },
+        //     let parentResizeObserver = document.getElementById('parent-resize-observer')
+        //     parentResizeObserver.style.position = 'relative'
+        // },
 
         initializeTitleStyles() {
-            let tds = this.titleDiv.style;
+            let tds = this.$refs.titleDiv.style;
                 tds.width = '100%';
                 tds.position = 'absolute';
                 tds.fontSize = this.fontSize;
@@ -17314,9 +17935,9 @@ var foStickyNoteMerged = {
         initializeVueOuterDivStyles() {
             // console.info('fo-sticky-note: initializeVueOuterDivStyles(): Start')
 
-            let ods = this.vueOuterDiv.style;
-                ods.width = '100%';
-                ods.backgroundColor = "#FF0000";
+            let ods = this.$refs.vueOuterDiv.style;
+                // position relative here allows the use of position absolute with descendents.
+                ods.position = 'relative';
 
             // console.info('fo-sticky-note: initializeVueOuterDivStyles(): End')
         },
@@ -17325,13 +17946,17 @@ var foStickyNoteMerged = {
             this.fadeIn(this.$refs.menuDiv);            
         },
 
-        pinColorButton(targetElement) {
-            this.$emit('color-button-click', targetElement);
-            this.menuIsPinned = true;
+        menuFadeOut() {
+            this.$refs.menuButton.style.backgroundColor = this.titleBackgroundColor;
+            this.$refs.menuButtonIcon.style.opacity = this.iconOpacityInactive;
+            setTimeout(() => {
+                this.fadeOut(this.$refs.menuDiv);
+            }, 100);
         },
 
         menuOnMouseEnter() {
             // console.info('fo-sticky-note.js: menuOnMouseEnter(): Fired')
+            this.titleSetViewMode();
             this.$refs.menuButton.style.backgroundColor = this.buttonHoverColor;
             this.$refs.menuButtonIcon.style.opacity = this.iconOpacityActive;
             this.fadeIn(this.$refs.menuDiv);
@@ -17339,14 +17964,8 @@ var foStickyNoteMerged = {
 
         menuOnMouseLeave(e) {
             // console.info('fo-sticky-note.js: menuOnMouseLeave(): Fired; this.menuIsPinned = ' + this.menuIsPinned)
-            if (this.menuIsPinned) {
-                // console.info('fo-sticky-note.js: menuOnMouseLeave(): Menu is pinned')
-            } else {                
-                this.$refs.menuButton.style.backgroundColor = this.titleBackgroundColor;
-                this.$refs.menuButtonIcon.style.opacity = this.iconOpacityInactive;
-                setTimeout(() => {
-                    this.fadeOut(this.$refs.menuDiv);
-                }, 100);
+            if (this.menuIsPinned) ; else {
+                this.menuFadeOut();                
                 this.$emit('menu-mouse-leave', e);    
             }
         },
@@ -17360,39 +17979,72 @@ var foStickyNoteMerged = {
         noteOnClick(e) {
             // console.info('fo-sticky-note: noteOnClick(): Fired!')
             this.dismissColorButton(this.colorButton);
+            this.menuFadeOut();
+            this.titleSetViewMode();
         },
 
-        outerDivOnResize() {
-            // console.info('fo-sticky-note: outerDivOnResize(): Fired!')
+        parentOnResize() {
+            // console.info('fo-sticky-note: parentOnResize(): Fired!')
 
-            this.resizeElements();
+        },
+
+        pinColorButton(targetElement) {
+            this.$emit('color-button-click', targetElement);
+            this.menuIsPinned = true;
         },
 
         resizeElements() {
+            // Since we can't use position: absolute for vueOuterDiv, we can't automatically resize its height
+            // using height: 100%. So, before doing anything else, set its height to match that of its immediate parent.
+
+            let parentElement = this.$refs.vueOuterDiv.parentElement;
+            let parentElementHeight = window.getComputedStyle(parentElement).getPropertyValue('height');
+
+            // console.info('fo-sticky-note: resizeElements(): parentElementHeight = ' + parentElementHeight)
+
+            let ods = this.$refs.vueOuterDiv.style;
+                ods.height = parentElementHeight;
+
             // Get the dimensions from which others will be derived.
 
-            // console.info('fo-sticky-note: resizeElements(): Fired!')
+            // Everything is based on the font size.
 
-            let fontSize          = window.getComputedStyle(this.$refs.titleInput).getPropertyValue('font-size');
-            let titleHeight       = window.getComputedStyle(this.titleDiv).getPropertyValue('height');
-            let titleWidth        = window.getComputedStyle(this.titleDiv).getPropertyValue('width');
-            let markdownDivHeight = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('height');
-            let markdownDivWidth  = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('width');
+            let fontSize = window.getComputedStyle(this.$refs.titleInput).getPropertyValue('font-size');
+
+            // This is the most important dimension. It is the height of a single-line title,
+            // and is based on the fontSize.
+
+            let titleMinHeight = (parseFloat(fontSize) * this.titleMinHeightRatio).toString() + 'px';
+            // console.info('fo-sticky-note.js: resizeElements(): titleMinHeight = ' + titleMinHeight)
+
+            // let outerDivHeight    = window.getComputedStyle(this.$refs.vueOuterDiv).getPropertyValue('height')
+
+            // Title height will have been set by autogrow.
+
+            let titleHeight = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('height');
+            let titleWidth  = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('width');
+
+            // console.info('fo-sticky-note.js: resizeElements(): titleHeight (before) = ' + titleHeight)
+
+            let markdownDivWidth = window.getComputedStyle(this.$refs.markdownDiv).getPropertyValue('width');
 
             // Derived dimensions.
 
+            let markdownDivHeight = (parseFloat(parentElementHeight) - parseFloat(titleHeight)).toString() + 'px';
             let markdownNoteTop = titleHeight;
-            let markdownNoteHeight = (parseFloat(markdownDivHeight) - parseFloat(titleHeight)).toString() + 'px';
-            let titleMinHeight = (parseFloat(fontSize) * this.titleMinHeightRatio).toString() + 'px';
 
             // Set the dimensions.
 
-            let tds = this.titleDiv.style;
+            // console.info('fo-sticky-note.js: resizeElements(): Setting markdownDiv height')
+            let mds = this.$refs.markdownDiv.style;
+                mds.height = markdownDivHeight;
+
+            let tds = this.$refs.titleDiv.style;
                 tds.minHeight = titleMinHeight;
 
-            let fmns = this.foMarkdownNote.style;
+            let fmns = this.foMarkdownNote.style;  // $refs doesn't work here, for some reason.
                 fmns.top = markdownNoteTop;
-                fmns.height = markdownNoteHeight;
+                fmns.height = markdownDivHeight;
 
             let tis = this.$refs.titleInput.style;
                 tis.height    = titleHeight;
@@ -17400,11 +18052,6 @@ var foStickyNoteMerged = {
                 tis.width     = titleWidth;
                 tis.minWidth  = titleWidth;
                 tis.maxWidth  = titleWidth;
-
-
-            // this.setTextareaHeight(this.$refs.titleInput, titleHeight)
-
-            this.$refs.titleInput.style.height = titleHeight;
 
         },
 
@@ -17414,10 +18061,12 @@ var foStickyNoteMerged = {
             // We need to get a color that is an object, not a string. Do this by setting the color of an element,
             // then getting its computed style.
 
-            let mds = this.markdownDiv.style;
+            // console.info('fo-sticky-note.js: setColors(): Setting markdownDiv backgroundColor')
+
+            let mds = this.$refs.markdownDiv.style;
                 mds.backgroundColor = this.backgroundColor;
 
-            let computedColor = getComputedStyle(this.markdownDiv).backgroundColor;
+            let computedColor = getComputedStyle(this.$refs.markdownDiv).backgroundColor;
 
             let computedColorString = this.rgb2hex(computedColor);
             this.titleBackgroundColor = this.shadeColor(computedColorString, -0.1);
@@ -17454,7 +18103,7 @@ var foStickyNoteMerged = {
             let muds = this.$refs.menuDiv.style;
                 muds.backgroundColor = this.titleBackgroundColor;
 
-            let tds = this.titleDiv.style;
+            let tds = this.$refs.titleDiv.style;
                 tds.backgroundColor = this.titleBackgroundColor;
                 tds.color = this.color;
 
@@ -17467,28 +18116,32 @@ var foStickyNoteMerged = {
             this.$refs.menuButtonIcon.src = this.menuIcon;            
         },
 
-        stickyNoteOnBlur(e) {
-            // console.info('fo-sticky-note: stickyNoteOnBlur(): Start')
-            if (this.blurHandlerEnabled) {
-                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled; e = ')
-                // console.info(e)
+        // },
 
-                this.$emit('blur', e);
+        // stickyNoteOnBlur(e) {
+        //     // console.info('fo-sticky-note: stickyNoteOnBlur(): Fired!')
+        //     if (this.blurHandlerEnabled) {
+        //         // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled')
+        //         // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is enabled; e = ')
+        //         // console.info(e)
 
-            } else {
-                // Re-enable blur handling. If it needs to be disabled again, onMouseDown will take care of that.
+        //         this.titleSetViewMode()
+        //         this.menuFadeOut()
 
-                // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is NOT enabled')
-                this.blurHandlerEnabled = true;                 
-            }
-        },
+        //         this.$emit('blur', e)
+
+        //     } else {
+        //         // Re-enable blur handling. If it needs to be disabled again, onMouseDown will take care of that.
+
+        //         // console.info('fo-sticky-note: stickyNoteOnBlur(): Blur handler is NOT enabled')
+        //         this.blurHandlerEnabled = true                 
+        //     }
+        // },
 
         stickyNoteOnKeyDown(e) {
             // console.info('fo-sticky-note: stickyNoteOnKeyDown: e.keyCode =')
             // console.info(e.keyCode)
-            if (e.keyCode === 27) {
-                // ESC
-            }
+            if (e.keyCode === 27) ;
         },
 
         stickyNoteOnMouseDown(e) {
@@ -17499,37 +18152,62 @@ var foStickyNoteMerged = {
             // console.info('fo-sticky-note: stickyNoteOnMouseUp(): Fired!')
         },
 
+
         titleDivOnClick(e) {
             // console.info('fo-sticky-note: titleDivOnClick(): Fired!') 
+            this.titleSetEditMode();
+        },
+
+        titleInputOnBlur(e) {
+            // console.info('fo-sticky-note: titleInputOnBlur(): Fired!') 
+            this.titleSetViewMode();
+            this.menuFadeOut();
+        },
+
+        titleInputOnKeyDown(e) {
+            if ((e.keyCode === 13) || (e.keyCode === 27)) {
+                e.preventDefault();
+                this.titleInputOnBlur(e);
+            }
+        },
+
+        titleSetEditMode() {
+            // console.info('fo-sticky-note: titleSetEditMode(): Start')
+
             this.dismissColorButton(this.colorButton);
 
-            let titleDivHeight = window.getComputedStyle(this.titleDiv).getPropertyValue('height');
+            let titleDivHeight = window.getComputedStyle(this.$refs.titleDiv).getPropertyValue('height');
 
-            let tds = this.titleDiv.style;
+            let tds = this.$refs.titleDiv.style;
             let tis = this.$refs.titleInput.style;
+
+            // Note: switching visibility using a bound style doesn't work.
+            // So we'll stick to the good old-fashioned way.
 
             tds.visibility = 'hidden';
             tds.zIndex = 10;
 
             tis.height = titleDivHeight;
             tis.top = '0';
-            tis.visibility = 'visible';
             tis.zIndex = 20;
+            tis.visibility = 'visible';
 
             // Place the cursor at the end of the text by clearing and setting the value.
-            // Save old value as we need to clear it
+            // Save old value as we need to clear it.
             let val = this.$refs.titleInput.value;
-  
+            // console.info('fo-sticky-note: titleSetEditMode(): val = ' + val)
+
+            
             // Focus the textarea, clear value, re-apply
             this.$refs.titleInput.focus();
             this.$refs.titleInput.value = '';
             this.$refs.titleInput.value = val;
+
+
         },
 
-        titleInputOnBlur(e) {
-            // console.info('fo-sticky-note: titleInputOnBlur(): Fired!') 
-
-            let tds = this.titleDiv.style;
+        titleSetViewMode() {
+            let tds = this.$refs.titleDiv.style;
             let tis = this.$refs.titleInput.style;
 
             tds.visibility = 'visible';
@@ -17539,14 +18217,6 @@ var foStickyNoteMerged = {
             tis.zIndex = 10;
 
             this.resizeElements();
-
-        },
-
-        titleInputOnKeyDown(e) {
-            if ((e.keyCode === 13) || (e.keyCode === 27)) {
-                e.preventDefault();
-                this.titleInputOnBlur(e);
-            }
         },
 
         // Color utility methods, borrowed from tinycolor
