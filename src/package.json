@@ -1,13 +1,13 @@
 {
   "name": "fo-sticky-note",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "fo-sticky-note.js",
   "directories": {
     "lib": "lib"
   },
   "dependencies": {
-    "fo-markdown-note": "^1.0.10",
+    "fo-markdown-note": "^1.0.11",
     "vue-resize": "^0.4.4",
     "vue-resize-directive": "^1.0.1"
   },

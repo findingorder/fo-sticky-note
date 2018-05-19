@@ -106,17 +106,16 @@ export default {
         menuDivId:              this.id + '-menu-div',
         menuOuterDivId:         this.id + '-menu-outer-div',
         menuIcon:               menuIconBlack,
-        markdownDiv:            null,
         markdownDivId:          this.id + '-markdown-div',
         titleBackgroundColor:   this.backgroundColor,
-        titleDiv:               null,
         titleDivId:             this.id + '-title-div',
-        // titleDivVisibility:     'visible',
-        titleInput:             null,
         titleInputId:           this.id + '-title-input',
-        // titleInputVisibility:   'visible',
         titleMinHeightRatio:    2.3,
-        vueOuterDiv:            null
+
+        // markdownDiv:            null,
+        // titleDiv:               null,
+        // titleInput:             null,
+        // vueOuterDiv:            null
 
     }},
 
