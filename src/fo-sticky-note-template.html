@@ -2,7 +2,6 @@
 
 <div :id='id' 
     class='outer-div' 
-    v-resize:throttle.50='componentOnResize'
     v-bind:style='{ visibility: componentVisibility }'
     ref='vueOuterDiv'
     >
@@ -60,7 +59,8 @@
          ref='markdownDiv'
          v-bind:style='{ visibility: componentVisibility }'
         >
-        <fo-markdown-note 
+        <fo-markdown-note ref='markdownNote'
+
             :id='foMarkdownNoteId'
             v-bind:note='note' 
             v-bind:background-color='backgroundColor'
@@ -71,7 +71,6 @@
             v-on:click='noteOnClick($event)'
             v-on:note-change='noteOnChange($event)'
             v-bind:style='{ visibility: componentVisibility }'
-            ref='foMarkdownNote'
             >
         </fo-markdown-note>
     </div>
@@ -92,6 +91,4 @@
         ref='titleInput'
     ></textarea>
 
-    <!-- <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' /> -->
 </div>
-<!-- <resize-observer id='parent-resize-observer' @notify='parentOnResize' /> -->

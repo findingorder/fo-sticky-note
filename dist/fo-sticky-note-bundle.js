@@ -16282,7 +16282,11 @@ var foMarkdownNote = {
             type: String,
             default: '1.2'
         },
-        note: String
+        note: String,
+        previewModeTrigger: {
+            type: String,
+            default: 'default'
+        }
     },
 
     data() { return {
@@ -16291,12 +16295,7 @@ var foMarkdownNote = {
         editModeIsInitialized:  false,
         mode:                   null,
         simplemde:              null,
-        textareaId:             this.id + '-textarea',
-        // codeMirrorDiv:          null,
-        // codeMirrorLines:        null,
-        // previewElement:         null,
-        // simpleMdeElement:       null,
-        // vueOuterDiv:            null
+        textareaId:             this.id + '-textarea'
     }},
 
     // In the template we set the id of the outer div to be the same as the id of the vue component.
@@ -16315,7 +16314,7 @@ var foMarkdownNote = {
 
 
     mounted() {
-        // console.info('fo-markdown-note.es6.js: mounted(): Start')
+        // console.info('fo-markdown-note.es6.js: mounted(): Fired!')
 
         // Initialize convenience references.
     
@@ -16338,8 +16337,13 @@ var foMarkdownNote = {
 
         // this.initializeResizeObserver()
 
+        // Must be done before $nextTick to make this.$refs.previewElement available downstream.
         this.enterPreviewMode('mounted');
 
+        // this.$nextTick(function () {            
+        //     // console.info('index.es6.js: mounted(): $nextTick: Fired!')
+
+        // })
         // console.info('fo-markdown-note.es6.js: mounted(): End')
     },
 
@@ -16378,6 +16382,9 @@ var foMarkdownNote = {
                 cmls.lineHeight = this.lineHeight;
             let pes = this.$refs.previewElement.style;
                 pes.lineHeight = this.lineHeight;
+        },
+        previewModeTrigger: function(newValue, oldValue) {
+            this.enterPreviewMode('previewModeTrigger');
         }
     },
 
@@ -16592,668 +16599,6 @@ var foMarkdownNote = {
     }
 };
 
-function styleInject$1(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (!css || typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
-
-var css$2 = ".resize-observer[data-v-b329ee4c]{position:absolute;top:0;left:0;z-index:-1;width:100%;height:100%;border:none;background-color:transparent;pointer-events:none;display:block;overflow:hidden;opacity:0}";
-styleInject$1(css$2);
-
-var commonjsGlobal$1 = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-function unwrapExports (x) {
-	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-}
-
-function createCommonjsModule$1(fn, module) {
-	return module = { exports: {} }, fn(module, module.exports), module.exports;
-}
-
-var ResizeSensor = createCommonjsModule$1(function (module, exports) {
-(function (root, factory) {
-    if (typeof undefined === "function" && undefined.amd) {
-        undefined(factory);
-    } else {
-        module.exports = factory();
-    }
-}(commonjsGlobal$1, function () {
-
-    //Make sure it does not throw in a SSR (Server Side Rendering) situation
-    if (typeof window === "undefined") {
-        return null;
-    }
-    // Only used for the dirty checking, so the event callback count is limted to max 1 call per fps per sensor.
-    // In combination with the event based resize sensor this saves cpu time, because the sensor is too fast and
-    // would generate too many unnecessary events.
-    var requestAnimationFrame = window.requestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        function (fn) {
-            return window.setTimeout(fn, 20);
-        };
-
-    /**
-     * Iterate over each of the provided element(s).
-     *
-     * @param {HTMLElement|HTMLElement[]} elements
-     * @param {Function}                  callback
-     */
-    function forEachElement(elements, callback){
-        var elementsType = Object.prototype.toString.call(elements);
-        var isCollectionTyped = ('[object Array]' === elementsType
-            || ('[object NodeList]' === elementsType)
-            || ('[object HTMLCollection]' === elementsType)
-            || ('[object Object]' === elementsType)
-            || ('undefined' !== typeof jQuery && elements instanceof jQuery) //jquery
-            || ('undefined' !== typeof Elements && elements instanceof Elements) //mootools
-        );
-        var i = 0, j = elements.length;
-        if (isCollectionTyped) {
-            for (; i < j; i++) {
-                callback(elements[i]);
-            }
-        } else {
-            callback(elements);
-        }
-    }
-
-    /**
-     * Class for dimension change detection.
-     *
-     * @param {Element|Element[]|Elements|jQuery} element
-     * @param {Function} callback
-     *
-     * @constructor
-     */
-    var ResizeSensor = function(element, callback) {
-        /**
-         *
-         * @constructor
-         */
-        function EventQueue() {
-            var q = [];
-            this.add = function(ev) {
-                q.push(ev);
-            };
-
-            var i, j;
-            this.call = function() {
-                for (i = 0, j = q.length; i < j; i++) {
-                    q[i].call();
-                }
-            };
-
-            this.remove = function(ev) {
-                var newQueue = [];
-                for(i = 0, j = q.length; i < j; i++) {
-                    if(q[i] !== ev) newQueue.push(q[i]);
-                }
-                q = newQueue;
-            };
-
-            this.length = function() {
-                return q.length;
-            };
-        }
-
-        /**
-         * @param {HTMLElement} element
-         * @param {String}      prop
-         * @returns {String|Number}
-         */
-        function getComputedStyle(element, prop) {
-            if (element.currentStyle) {
-                return element.currentStyle[prop];
-            } else if (window.getComputedStyle) {
-                return window.getComputedStyle(element, null).getPropertyValue(prop);
-            } else {
-                return element.style[prop];
-            }
-        }
-
-        /**
-         *
-         * @param {HTMLElement} element
-         * @param {Function}    resized
-         */
-        function attachResizeEvent(element, resized) {
-            if (!element.resizedAttached) {
-                element.resizedAttached = new EventQueue();
-                element.resizedAttached.add(resized);
-            } else if (element.resizedAttached) {
-                element.resizedAttached.add(resized);
-                return;
-            }
-
-            element.resizeSensor = document.createElement('div');
-            element.resizeSensor.className = 'resize-sensor';
-            var style = 'position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;';
-            var styleChild = 'position: absolute; left: 0; top: 0; transition: 0s;';
-
-            element.resizeSensor.style.cssText = style;
-            element.resizeSensor.innerHTML =
-                '<div class="resize-sensor-expand" style="' + style + '">' +
-                    '<div style="' + styleChild + '"></div>' +
-                '</div>' +
-                '<div class="resize-sensor-shrink" style="' + style + '">' +
-                    '<div style="' + styleChild + ' width: 200%; height: 200%"></div>' +
-                '</div>';
-            element.appendChild(element.resizeSensor);
-
-            if (getComputedStyle(element, 'position') == 'static') {
-                element.style.position = 'relative';
-            }
-
-            var expand = element.resizeSensor.childNodes[0];
-            var expandChild = expand.childNodes[0];
-            var shrink = element.resizeSensor.childNodes[1];
-            var dirty, rafId, newWidth, newHeight;
-            var lastWidth = element.offsetWidth;
-            var lastHeight = element.offsetHeight;
-
-            var reset = function() {
-                expandChild.style.width = '100000px';
-                expandChild.style.height = '100000px';
-
-                expand.scrollLeft = 100000;
-                expand.scrollTop = 100000;
-
-                shrink.scrollLeft = 100000;
-                shrink.scrollTop = 100000;
-            };
-
-            reset();
-
-            var onResized = function() {
-                rafId = 0;
-
-                if (!dirty) return;
-
-                lastWidth = newWidth;
-                lastHeight = newHeight;
-
-                if (element.resizedAttached) {
-                    element.resizedAttached.call();
-                }
-            };
-
-            var onScroll = function() {
-                newWidth = element.offsetWidth;
-                newHeight = element.offsetHeight;
-                dirty = newWidth != lastWidth || newHeight != lastHeight;
-
-                if (dirty && !rafId) {
-                    rafId = requestAnimationFrame(onResized);
-                }
-
-                reset();
-            };
-
-            var addEvent = function(el, name, cb) {
-                if (el.attachEvent) {
-                    el.attachEvent('on' + name, cb);
-                } else {
-                    el.addEventListener(name, cb);
-                }
-            };
-
-            addEvent(expand, 'scroll', onScroll);
-            addEvent(shrink, 'scroll', onScroll);
-        }
-
-        forEachElement(element, function(elem){
-            attachResizeEvent(elem, callback);
-        });
-
-        this.detach = function(ev) {
-            ResizeSensor.detach(element, ev);
-        };
-    };
-
-    ResizeSensor.detach = function(element, ev) {
-        forEachElement(element, function(elem){
-            if(elem.resizedAttached && typeof ev == "function"){
-                elem.resizedAttached.remove(ev);
-                if(elem.resizedAttached.length()) return;
-            }
-            if (elem.resizeSensor) {
-                if (elem.contains(elem.resizeSensor)) {
-                    elem.removeChild(elem.resizeSensor);
-                }
-                delete elem.resizeSensor;
-                delete elem.resizedAttached;
-            }
-        });
-    };
-
-    return ResizeSensor;
-
-}));
-});
-
-var ResizeSensor$1 = /*#__PURE__*/Object.freeze({
-  default: ResizeSensor,
-  __moduleExports: ResizeSensor
-});
-
-/**
- * lodash (Custom Build) <https://lodash.com/>
- * Build: `lodash modularize exports="npm" -o ./`
- * Copyright jQuery Foundation and other contributors <https://jquery.org/>
- * Released under MIT license <https://lodash.com/license>
- * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
- * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- */
-
-/** Used as the `TypeError` message for "Functions" methods. */
-var FUNC_ERROR_TEXT = 'Expected a function';
-
-/** Used as references for various `Number` constants. */
-var NAN = 0 / 0;
-
-/** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
-
-/** Used to match leading and trailing whitespace. */
-var reTrim = /^\s+|\s+$/g;
-
-/** Used to detect bad signed hexadecimal string values. */
-var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-
-/** Used to detect binary string values. */
-var reIsBinary = /^0b[01]+$/i;
-
-/** Used to detect octal string values. */
-var reIsOctal = /^0o[0-7]+$/i;
-
-/** Built-in method references without a dependency on `root`. */
-var freeParseInt = parseInt;
-
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof commonjsGlobal$1 == 'object' && commonjsGlobal$1 && commonjsGlobal$1.Object === Object && commonjsGlobal$1;
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var objectToString = objectProto.toString;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max,
-    nativeMin = Math.min;
-
-/**
- * Gets the timestamp of the number of milliseconds that have elapsed since
- * the Unix epoch (1 January 1970 00:00:00 UTC).
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Date
- * @returns {number} Returns the timestamp.
- * @example
- *
- * _.defer(function(stamp) {
- *   console.log(_.now() - stamp);
- * }, _.now());
- * // => Logs the number of milliseconds it took for the deferred invocation.
- */
-var now = function() {
-  return root.Date.now();
-};
-
-/**
- * Creates a debounced function that delays invoking `func` until after `wait`
- * milliseconds have elapsed since the last time the debounced function was
- * invoked. The debounced function comes with a `cancel` method to cancel
- * delayed `func` invocations and a `flush` method to immediately invoke them.
- * Provide `options` to indicate whether `func` should be invoked on the
- * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
- * with the last arguments provided to the debounced function. Subsequent
- * calls to the debounced function return the result of the last `func`
- * invocation.
- *
- * **Note:** If `leading` and `trailing` options are `true`, `func` is
- * invoked on the trailing edge of the timeout only if the debounced function
- * is invoked more than once during the `wait` timeout.
- *
- * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
- * until to the next tick, similar to `setTimeout` with a timeout of `0`.
- *
- * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
- * for details over the differences between `_.debounce` and `_.throttle`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Function
- * @param {Function} func The function to debounce.
- * @param {number} [wait=0] The number of milliseconds to delay.
- * @param {Object} [options={}] The options object.
- * @param {boolean} [options.leading=false]
- *  Specify invoking on the leading edge of the timeout.
- * @param {number} [options.maxWait]
- *  The maximum time `func` is allowed to be delayed before it's invoked.
- * @param {boolean} [options.trailing=true]
- *  Specify invoking on the trailing edge of the timeout.
- * @returns {Function} Returns the new debounced function.
- * @example
- *
- * // Avoid costly calculations while the window size is in flux.
- * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
- *
- * // Invoke `sendMail` when clicked, debouncing subsequent calls.
- * jQuery(element).on('click', _.debounce(sendMail, 300, {
- *   'leading': true,
- *   'trailing': false
- * }));
- *
- * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
- * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
- * var source = new EventSource('/stream');
- * jQuery(source).on('message', debounced);
- *
- * // Cancel the trailing debounced invocation.
- * jQuery(window).on('popstate', debounced.cancel);
- */
-function debounce(func, wait, options) {
-  var lastArgs,
-      lastThis,
-      maxWait,
-      result,
-      timerId,
-      lastCallTime,
-      lastInvokeTime = 0,
-      leading = false,
-      maxing = false,
-      trailing = true;
-
-  if (typeof func != 'function') {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  wait = toNumber(wait) || 0;
-  if (isObject(options)) {
-    leading = !!options.leading;
-    maxing = 'maxWait' in options;
-    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
-    trailing = 'trailing' in options ? !!options.trailing : trailing;
-  }
-
-  function invokeFunc(time) {
-    var args = lastArgs,
-        thisArg = lastThis;
-
-    lastArgs = lastThis = undefined;
-    lastInvokeTime = time;
-    result = func.apply(thisArg, args);
-    return result;
-  }
-
-  function leadingEdge(time) {
-    // Reset any `maxWait` timer.
-    lastInvokeTime = time;
-    // Start the timer for the trailing edge.
-    timerId = setTimeout(timerExpired, wait);
-    // Invoke the leading edge.
-    return leading ? invokeFunc(time) : result;
-  }
-
-  function remainingWait(time) {
-    var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime,
-        result = wait - timeSinceLastCall;
-
-    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
-  }
-
-  function shouldInvoke(time) {
-    var timeSinceLastCall = time - lastCallTime,
-        timeSinceLastInvoke = time - lastInvokeTime;
-
-    // Either this is the first call, activity has stopped and we're at the
-    // trailing edge, the system time has gone backwards and we're treating
-    // it as the trailing edge, or we've hit the `maxWait` limit.
-    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
-      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
-  }
-
-  function timerExpired() {
-    var time = now();
-    if (shouldInvoke(time)) {
-      return trailingEdge(time);
-    }
-    // Restart the timer.
-    timerId = setTimeout(timerExpired, remainingWait(time));
-  }
-
-  function trailingEdge(time) {
-    timerId = undefined;
-
-    // Only invoke if we have `lastArgs` which means `func` has been
-    // debounced at least once.
-    if (trailing && lastArgs) {
-      return invokeFunc(time);
-    }
-    lastArgs = lastThis = undefined;
-    return result;
-  }
-
-  function cancel() {
-    if (timerId !== undefined) {
-      clearTimeout(timerId);
-    }
-    lastInvokeTime = 0;
-    lastArgs = lastCallTime = lastThis = timerId = undefined;
-  }
-
-  function flush() {
-    return timerId === undefined ? result : trailingEdge(now());
-  }
-
-  function debounced() {
-    var time = now(),
-        isInvoking = shouldInvoke(time);
-
-    lastArgs = arguments;
-    lastThis = this;
-    lastCallTime = time;
-
-    if (isInvoking) {
-      if (timerId === undefined) {
-        return leadingEdge(lastCallTime);
-      }
-      if (maxing) {
-        // Handle invocations in a tight loop.
-        timerId = setTimeout(timerExpired, wait);
-        return invokeFunc(lastCallTime);
-      }
-    }
-    if (timerId === undefined) {
-      timerId = setTimeout(timerExpired, wait);
-    }
-    return result;
-  }
-  debounced.cancel = cancel;
-  debounced.flush = flush;
-  return debounced;
-}
-
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return !!value && (type == 'object' || type == 'function');
-}
-
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return !!value && typeof value == 'object';
-}
-
-/**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && objectToString.call(value) == symbolTag);
-}
-
-/**
- * Converts `value` to a number.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to process.
- * @returns {number} Returns the number.
- * @example
- *
- * _.toNumber(3.2);
- * // => 3.2
- *
- * _.toNumber(Number.MIN_VALUE);
- * // => 5e-324
- *
- * _.toNumber(Infinity);
- * // => Infinity
- *
- * _.toNumber('3.2');
- * // => 3.2
- */
-function toNumber(value) {
-  if (typeof value == 'number') {
-    return value;
-  }
-  if (isSymbol(value)) {
-    return NAN;
-  }
-  if (isObject(value)) {
-    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-    value = isObject(other) ? (other + '') : other;
-  }
-  if (typeof value != 'string') {
-    return value === 0 ? value : +value;
-  }
-  value = value.replace(reTrim, '');
-  var isBinary = reIsBinary.test(value);
-  return (isBinary || reIsOctal.test(value))
-    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-    : (reIsBadHex.test(value) ? NAN : +value);
-}
-
-var lodash_debounce = debounce;
-
-var lodash_debounce$1 = /*#__PURE__*/Object.freeze({
-  default: lodash_debounce,
-  __moduleExports: lodash_debounce
-});
-
-var require$$0$2 = ( ResizeSensor$1 && ResizeSensor ) || ResizeSensor$1;
-
-var require$$1$2 = ( lodash_debounce$1 && lodash_debounce ) || lodash_debounce$1;
-
-var Vueresize = createCommonjsModule$1(function (module, exports) {
-!function(t,n){module.exports=n(require$$0$2,require$$1$2);}(commonjsGlobal$1,function(t,n){return function(t){function n(r){if(e[r])return e[r].exports;var o=e[r]={exports:{},id:r,loaded:!1};return t[r].call(o.exports,o,o.exports,n),o.loaded=!0,o.exports}var e={};return n.m=t,n.c=e,n.p="/",n(0)}([function(t,n,e){var r,o,u;!function(i,c){o=[t,n,e(9),e(36),e(37)],r=c,u="function"==typeof r?r.apply(n,o):r,!(void 0!==u&&(t.exports=u));}(this,function(t,n,e,r,o){function u(t){return t&&t.__esModule?t:{default:t}}function i(t){if(!t)return l;var n=(0, c.default)(t);return n.length?Number(n[0]):l}Object.defineProperty(n,"__esModule",{value:!0});var c=u(e),f=u(r),s=u(o),a=s.default.debounce,p=void 0===a?s.default:a,l=150;n.default={inserted:function(t,n){var e=n.value,r=n.arg,o=n.modifiers;e||console.warn("method or v-resize is not implemented as to $el");var u=function(){return e(t)};switch(r){case"debounce":u=p(function(){return e(t)},i(o));break;case"throttle":var c=i(o);u=p(function(){return e(t)},c,{leading:!0,trailing:!0,maxWait:c});}new f.default(t,u);}},t.exports=n.default;});},function(t,n){var e=t.exports={version:"2.4.0"};"number"==typeof __e&&(__e=e);},function(t,n,e){t.exports=!e(3)(function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a});},function(t,n){t.exports=function(t){try{return!!t()}catch(t){return!0}};},function(t,n){var e=t.exports="undefined"!=typeof window&&window.Math==Math?window:"undefined"!=typeof self&&self.Math==Math?self:Function("return this")();"number"==typeof __g&&(__g=e);},function(t,n){t.exports=function(t){return"object"==typeof t?null!==t:"function"==typeof t};},function(t,n){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on  "+t);return t};},function(t,n){var e=Math.ceil,r=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?r:e)(t)};},function(t,n,e){var r=e(22),o=e(6);t.exports=function(t){return r(o(t))};},function(t,n,e){t.exports={default:e(10),__esModule:!0};},function(t,n,e){e(35),t.exports=e(1).Object.keys;},function(t,n){t.exports=function(t){if("function"!=typeof t)throw TypeError(t+" is not a function!");return t};},function(t,n,e){var r=e(5);t.exports=function(t){if(!r(t))throw TypeError(t+" is not an object!");return t};},function(t,n,e){var r=e(8),o=e(31),u=e(30);t.exports=function(t){return function(n,e,i){var c,f=r(n),s=o(f.length),a=u(i,s);if(t&&e!=e){for(;s>a;)if(c=f[a++],c!=c)return!0}else for(;s>a;a++)if((t||a in f)&&f[a]===e)return t||a||0;return!t&&-1}};},function(t,n){var e={}.toString;t.exports=function(t){return e.call(t).slice(8,-1)};},function(t,n,e){var r=e(11);t.exports=function(t,n,e){if(r(t),void 0===n)return t;switch(e){case 1:return function(e){return t.call(n,e)};case 2:return function(e,r){return t.call(n,e,r)};case 3:return function(e,r,o){return t.call(n,e,r,o)}}return function(){return t.apply(n,arguments)}};},function(t,n,e){var r=e(5),o=e(4).document,u=r(o)&&r(o.createElement);t.exports=function(t){return u?o.createElement(t):{}};},function(t,n){t.exports="constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",");},function(t,n,e){var r=e(4),o=e(1),u=e(15),i=e(20),c="prototype",f=function(t,n,e){var s,a,p,l=t&f.F,v=t&f.G,d=t&f.S,x=t&f.P,y=t&f.B,h=t&f.W,b=v?o:o[n]||(o[n]={}),m=b[c],j=v?r:d?r[n]:(r[n]||{})[c];v&&(e=n);for(s in e)a=!l&&j&&void 0!==j[s],a&&s in b||(p=a?j[s]:e[s],b[s]=v&&"function"!=typeof j[s]?e[s]:y&&a?u(p,r):h&&j[s]==p?function(t){var n=function(n,e,r){if(this instanceof t){switch(arguments.length){case 0:return new t;case 1:return new t(n);case 2:return new t(n,e)}return new t(n,e,r)}return t.apply(this,arguments)};return n[c]=t[c],n}(p):x&&"function"==typeof p?u(Function.call,p):p,x&&((b.virtual||(b.virtual={}))[s]=p,t&f.R&&m&&!m[s]&&i(m,s,p)));};f.F=1,f.G=2,f.S=4,f.P=8,f.B=16,f.W=32,f.U=64,f.R=128,t.exports=f;},function(t,n){var e={}.hasOwnProperty;t.exports=function(t,n){return e.call(t,n)};},function(t,n,e){var r=e(23),o=e(27);t.exports=e(2)?function(t,n,e){return r.f(t,n,o(1,e))}:function(t,n,e){return t[n]=e,t};},function(t,n,e){t.exports=!e(2)&&!e(3)(function(){return 7!=Object.defineProperty(e(16)("div"),"a",{get:function(){return 7}}).a});},function(t,n,e){var r=e(14);t.exports=Object("z").propertyIsEnumerable(0)?Object:function(t){return"String"==r(t)?t.split(""):Object(t)};},function(t,n,e){var r=e(12),o=e(21),u=e(33),i=Object.defineProperty;n.f=e(2)?Object.defineProperty:function(t,n,e){if(r(t),n=u(n,!0),r(e),o)try{return i(t,n,e)}catch(t){}if("get"in e||"set"in e)throw TypeError("Accessors not supported!");return"value"in e&&(t[n]=e.value),t};},function(t,n,e){var r=e(19),o=e(8),u=e(13)(!1),i=e(28)("IE_PROTO");t.exports=function(t,n){var e,c=o(t),f=0,s=[];for(e in c)e!=i&&r(c,e)&&s.push(e);for(;n.length>f;)r(c,e=n[f++])&&(~u(s,e)||s.push(e));return s};},function(t,n,e){var r=e(24),o=e(17);t.exports=Object.keys||function(t){return r(t,o)};},function(t,n,e){var r=e(18),o=e(1),u=e(3);t.exports=function(t,n){var e=(o.Object||{})[t]||Object[t],i={};i[t]=n(e),r(r.S+r.F*u(function(){e(1);}),"Object",i);};},function(t,n){t.exports=function(t,n){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:n}};},function(t,n,e){var r=e(29)("keys"),o=e(34);t.exports=function(t){return r[t]||(r[t]=o(t))};},function(t,n,e){var r=e(4),o="__core-js_shared__",u=r[o]||(r[o]={});t.exports=function(t){return u[t]||(u[t]={})};},function(t,n,e){var r=e(7),o=Math.max,u=Math.min;t.exports=function(t,n){return t=r(t),t<0?o(t+n,0):u(t,n)};},function(t,n,e){var r=e(7),o=Math.min;t.exports=function(t){return t>0?o(r(t),9007199254740991):0};},function(t,n,e){var r=e(6);t.exports=function(t){return Object(r(t))};},function(t,n,e){var r=e(5);t.exports=function(t,n){if(!r(t))return t;var e,o;if(n&&"function"==typeof(e=t.toString)&&!r(o=e.call(t)))return o;if("function"==typeof(e=t.valueOf)&&!r(o=e.call(t)))return o;if(!n&&"function"==typeof(e=t.toString)&&!r(o=e.call(t)))return o;throw TypeError("Can't convert object to primitive value")};},function(t,n){var e=0,r=Math.random();t.exports=function(t){return"Symbol(".concat(void 0===t?"":t,")_",(++e+r).toString(36))};},function(t,n,e){var r=e(32),o=e(25);e(26)("keys",function(){return function(t){return o(r(t))}});},function(n,e){n.exports=t;},function(t,e){t.exports=n;}])});
-
-});
-
-var resize = unwrapExports(Vueresize);
-var Vueresize_1 = Vueresize.Vueresize;
-
 (function($)
 {
     /**
@@ -17331,6 +16676,183 @@ var Vueresize_1 = Vueresize.Vueresize;
     };
 })(jQuery);
 
+var commonjsGlobal$1 = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+function createCommonjsModule$1(fn, module) {
+	return module = { exports: {} }, fn(module, module.exports), module.exports;
+}
+
+var lib = createCommonjsModule$1(function (module, exports) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+/**
+* Detect Element Resize.
+* Forked in order to guard against unsafe 'window' and 'document' references by react-virtualized project.
+* ES6ified and npmified by @noderaider.
+*
+* https://github.com/sdecima/javascript-detect-element-resize
+* Sebastian Decima
+*
+* version: 0.5.3
+**/
+
+// Check `document` and `window` in case of server-side rendering
+var IS_BROWSER = function IS_BROWSER() {
+  return (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object';
+};
+var _window = IS_BROWSER() ? window : commonjsGlobal$1;
+
+var attachEvent = IS_BROWSER() ? document.attachEvent : false;
+var stylesCreated = false;
+var animationName = null;
+var animationKeyframes = null;
+var animationStyle = null;
+var animationstartevent = null;
+
+var resetTriggers = function resetTriggers(element) {
+  var triggers = element.__resizeTriggers__;
+  var expand = triggers.firstElementChild;
+  var contract = triggers.lastElementChild;
+  var expandChild = expand.firstElementChild;
+  contract.scrollLeft = contract.scrollWidth;
+  contract.scrollTop = contract.scrollHeight;
+  expandChild.style.width = expand.offsetWidth + 1 + 'px';
+  expandChild.style.height = expand.offsetHeight + 1 + 'px';
+  expand.scrollLeft = expand.scrollWidth;
+  expand.scrollTop = expand.scrollHeight;
+};
+
+var requestFrame = function () {
+  var raf = _window.requestAnimationFrame || _window.mozRequestAnimationFrame || _window.webkitRequestAnimationFrame || function (fn) {
+    return setTimeout(fn, 20);
+  };
+  return function (fn) {
+    return raf(fn);
+  };
+}();
+
+var cancelFrame = function () {
+  var cancel = _window.cancelAnimationFrame || _window.mozCancelAnimationFrame || _window.webkitCancelAnimationFrame || _window.clearTimeout;
+  return function (id) {
+    return cancel(id);
+  };
+}();
+
+var checkTriggers = function checkTriggers(element) {
+  return element.offsetWidth != element.__resizeLast__.width || element.offsetHeight != element.__resizeLast__.height;
+};
+var scrollListener = function scrollListener(e) {
+  var element = this;
+  resetTriggers(this);
+  if (this.__resizeRAF__) cancelFrame(this.__resizeRAF__);
+  this.__resizeRAF__ = requestFrame(function () {
+    if (checkTriggers(element)) {
+      element.__resizeLast__.width = element.offsetWidth;
+      element.__resizeLast__.height = element.offsetHeight;
+      element.__resizeListeners__.forEach(function (fn) {
+        fn.call(element, e);
+      });
+    }
+  });
+};
+
+if (IS_BROWSER() && !attachEvent) {
+
+  /* Detect CSS Animations support to detect element display/re-attach */
+  var animation = false;
+  var keyframeprefix = '';
+  animationstartevent = 'animationstart';
+  var domPrefixes = 'Webkit Moz O ms'.split(' ');
+  var startEvents = 'webkitAnimationStart animationstart oAnimationStart MSAnimationStart'.split(' ');
+  var pfx = '';
+  var elm = document.createElement('fakeelement');
+  if (typeof elm.style.animationName !== 'undefined') animation = true;
+
+  if (animation === false) {
+    for (var i = 0; i < domPrefixes.length; i++) {
+      if (typeof elm.style[domPrefixes[i] + 'AnimationName'] !== 'undefined') {
+        pfx = domPrefixes[i];
+        keyframeprefix = '-' + pfx.toLowerCase() + '-';
+        animationstartevent = startEvents[i];
+        animation = true;
+        break;
+      }
+    }
+  }
+
+  animationName = 'resizeanim';
+  animationKeyframes = '@' + keyframeprefix + 'keyframes ' + animationName + ' { from { opacity: 0; } to { opacity: 0; } } ';
+  animationStyle = keyframeprefix + 'animation: 1ms ' + animationName + '; ';
+}
+
+var createStyles = function createStyles() {
+  if (!stylesCreated) {
+    //opacity:0 works around a chrome bug https://code.google.com/p/chromium/issues/detail?id=286360
+    var css = (animationKeyframes ? animationKeyframes : '') + '.resize-triggers { ' + (animationStyle ? animationStyle : '') + 'visibility: hidden; opacity: 0; } .resize-triggers, .resize-triggers > div, .contract-trigger:before { content: " "; display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; } .resize-triggers > div { background: #eee; overflow: auto; } .contract-trigger:before { width: 200%; height: 200%; }';
+    var head = document.head || document.getElementsByTagName('head')[0];
+    var style = document.createElement('style');
+
+    style.type = 'text/css';
+    if (style.styleSheet) {
+      style.styleSheet.cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+
+    head.appendChild(style);
+    stylesCreated = true;
+  }
+};
+
+var addResizeListener = function addResizeListener(element, fn) {
+  if (attachEvent) element.attachEvent('onresize', fn);else if (IS_BROWSER()) {
+    if (!element.__resizeTriggers__) {
+      if (getComputedStyle(element).position == 'static') element.style.position = 'relative';
+      createStyles();
+      element.__resizeLast__ = {};
+      element.__resizeListeners__ = [];
+      (element.__resizeTriggers__ = document.createElement('div')).className = 'resize-triggers';
+      element.__resizeTriggers__.innerHTML = '<div class="expand-trigger"><div></div></div>' + '<div class="contract-trigger"></div>';
+      element.appendChild(element.__resizeTriggers__);
+      resetTriggers(element);
+      element.addEventListener('scroll', scrollListener, true);
+
+      /* Listen for a css animation to detect element display/re-attach */
+      animationstartevent && element.__resizeTriggers__.addEventListener(animationstartevent, function (e) {
+        if (e.animationName == animationName) resetTriggers(element);
+      });
+    }
+    element.__resizeListeners__.push(fn);
+  }
+};
+
+var removeResizeListener = function removeResizeListener(element, fn) {
+  if (attachEvent) element.detachEvent('onresize', fn);else if (IS_BROWSER()) {
+    element.__resizeListeners__.splice(element.__resizeListeners__.indexOf(fn), 1);
+    if (!element.__resizeListeners__.length) {
+      element.removeEventListener('scroll', scrollListener, true);
+      element.__resizeTriggers__ = !element.removeChild(element.__resizeTriggers__);
+    }
+  }
+};
+
+exports.addResizeListener = addResizeListener;
+exports.removeResizeListener = removeResizeListener;
+});
+
+unwrapExports(lib);
+var lib_1 = lib.addResizeListener;
+var lib_2 = lib.removeResizeListener;
+
 var menuIconBlack = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSI0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0zIDE4aDE4di0ySDN2MnptMC01aDE4di0ySDN2MnptMC03djJoMThWNkgzeiIvPgo8L3N2Zz4='
 
 var menuIconWhite = 'data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjRkZGRkZGIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSI0OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGQ9Ik0zIDE4aDE4di0ySDN2MnptMC01aDE4di0ySDN2MnptMC03djJoMThWNkgzeiIvPgo8L3N2Zz4='
@@ -17366,7 +16888,7 @@ var foStickyNoteMerged = {
         // ResizeObserver
     },
     directives: {
-        resize
+        // resize
     },
 
     // Props are component data that can be set in the html tag using attributes.
@@ -17400,39 +16922,52 @@ var foStickyNoteMerged = {
         noteTitle: {
             type: String,
             default: 'Title'
+        },
+        resizeTrigger: {
+            type: String,
+            default: 'default'
+        },
+        titleSetViewModeTrigger: {
+            type: String,
+            default: 'default'
+        },
+        useParentResizeListener: {
+            type: Boolean,
+            default: true
         }
     },
 
     data() { return {
         // blurHandlerEnabled:     true,
-        buttonFontRatio:        0.9,
-        buttonHeightRatio:      2.3,
-        buttonWidthRatio:       2.5,
-        buttonPaddingRatio:     0.55,
-        buttonHoverColor:       this.backgroundColor,
-        color:                  '#000',
-        colorButtonIconId:      this.id + '-color-button-icon',
-        colorButtonId:          this.id + '-color-button',
-        colorIcon:              colorIconBlack,
-        componentVisibility:    'hidden',
-        closeButtonIconId:      this.id + '-close-button-icon',
-        closeButtonId:          this.id + '-close-button',
-        closeIcon:              closeIconBlack,
-        foMarkdownNote:         null,
-        foMarkdownNoteId:       this.id + '-markdown-note',
-        iconOpacityActive:      0.54,
-        iconOpacityInactive:    0.26,
-        menuButtonId:           this.id + '-menu-button',
-        menuButtonIconId:       this.id + '-menu-button-icon',
-        menuDivId:              this.id + '-menu-div',
-        menuOuterDivId:         this.id + '-menu-outer-div',
-        menuIcon:               menuIconBlack,
-        markdownDivId:          this.id + '-markdown-div',
-        titleBackgroundColor:   this.backgroundColor,
-        titleDivId:             this.id + '-title-div',
-        titleInputId:           this.id + '-title-input',
-        titleMinHeightRatio:    2.3,
+        buttonFontRatio:          0.9,
+        buttonHeightRatio:        2.3,
+        buttonWidthRatio:         2.5,
+        buttonPaddingRatio:       0.55,
+        buttonHoverColor:         this.backgroundColor,
+        color:                    '#000',
+        colorButtonIconId:        this.id + '-color-button-icon',
+        colorButtonId:            this.id + '-color-button',
+        colorIcon:                colorIconBlack,
+        componentVisibility:      'hidden',
+        closeButtonIconId:        this.id + '-close-button-icon',
+        closeButtonId:            this.id + '-close-button',
+        closeIcon:                closeIconBlack,
+        foMarkdownNoteId:         this.id + '-markdown-note',
+        iconOpacityActive:        0.54,
+        iconOpacityInactive:      0.26,
+        menuButtonId:             this.id + '-menu-button',
+        menuButtonIconId:         this.id + '-menu-button-icon',
+        menuDivId:                this.id + '-menu-div',
+        menuOuterDivId:           this.id + '-menu-outer-div',
+        menuIcon:                 menuIconBlack,
+        markdownDivId:            this.id + '-markdown-div',
+        parentHasResizeListener:  false,
+        titleBackgroundColor:     this.backgroundColor,
+        titleDivId:               this.id + '-title-div',
+        titleInputId:             this.id + '-title-input',
+        titleMinHeightRatio:      2.3,
 
+        // foMarkdownNote:         null,
         // markdownDiv:            null,
         // titleDiv:               null,
         // titleInput:             null,
@@ -17449,7 +16984,6 @@ var foStickyNoteMerged = {
 
 <div :id='id' 
     class='outer-div' 
-    v-resize:throttle.50='componentOnResize'
     v-bind:style='{ visibility: componentVisibility }'
     ref='vueOuterDiv'
     >
@@ -17507,7 +17041,8 @@ var foStickyNoteMerged = {
          ref='markdownDiv'
          v-bind:style='{ visibility: componentVisibility }'
         >
-        <fo-markdown-note 
+        <fo-markdown-note ref='markdownNote'
+
             :id='foMarkdownNoteId'
             v-bind:note='note' 
             v-bind:background-color='backgroundColor'
@@ -17518,7 +17053,6 @@ var foStickyNoteMerged = {
             v-on:click='noteOnClick($event)'
             v-on:note-change='noteOnChange($event)'
             v-bind:style='{ visibility: componentVisibility }'
-            ref='foMarkdownNote'
             >
         </fo-markdown-note>
     </div>
@@ -17539,27 +17073,12 @@ var foStickyNoteMerged = {
         ref='titleInput'
     ></textarea>
 
-    <!-- <resize-observer id='outer-div-resize-observer' @notify='outerDivOnResize' /> -->
 </div>
-<!-- <resize-observer id='parent-resize-observer' @notify='parentOnResize' /> -->
 
     `,
 
     mounted() {
         // console.info('fo-sticky-note.es6.js: mounted(): Start')
-
-        // Initialize convenience references for which $refs won't work.
-        // We prefer tu use Vue's built-in $refs feature but in some instances we have to make our own references.
-        
-        this.foMarkdownNote = document.getElementById(this.foMarkdownNoteId);
-        // this.titleInput     = document.getElementById(this.titleInputId)
-
-        // this.initializeResizeObserver()
-
-        // // Wait a short time until the browser is able to display and resize the markdown div.
-
-        // // TODO: Instead of using setTimeout, implement a 'componentReady' event in fo-markdown-note that we can 
-        // // use to definitively determine that the markdown note is visible.
 
         // In styling our various divs, we'll work from the outside in.
         this.initializeHtmlStyles();
@@ -17569,16 +17088,18 @@ var foStickyNoteMerged = {
         this.initializeMarkdownStyles();
 
         this.setColors();
-        this.resizeElements();
-
 
         this.componentVisibility = 'visible';
 
         let tis = this.$refs.titleInput.style;
         tis.visibility = 'hidden';
 
-        // setTimeout(() => { 
-        // }, 1000) // 600 because fo-markdown-note waits 500 before making itself visible.
+        this.resizeElements();
+
+        lib_1(this.$refs.vueOuterDiv, this.handleResize);
+
+        // this.$nextTick(function () {
+        // })
         
         // console.info('fo-sticky-note.es6.js: mounted(): End')
     },
@@ -17608,14 +17129,34 @@ var foStickyNoteMerged = {
         },
 
         titleInputVisibility: function (newVisibility, oldVisibility) {
-            // console.info('fo-sticky-note.js: watch: titleInputVisibility: Fired!')
-            // console.info('fo-sticky-note.js: watch: titleInputVisibility: oldVisibility = ' + oldVisibility)
-            // console.info('fo-sticky-note.js: watch: titleInputVisibility: newVisibility = ' + newVisibility)
 
             // For some unknown reason, v-bind doesn't work for the textarea.
             // So we'll watch the data value and explicitly set the visibility when it changes.
 
             this.$refs.titleInput.style.visibility = newVisibility;
+        },
+
+        resizeTrigger: function(newValue, oldValue) {
+            // console.info('fo-sticky-note.js: watch: resizeTrigger: Fired! newValue = ' + newValue)
+
+            this.resizeElements();
+        },
+
+        titleSetViewModeTrigger: function(newValue, oldValue) {
+            // console.info('fo-sticky-note.js: watch: activateTrigger: Fired! newValue = ' + newValue)
+
+
+            setTimeout(() => { 
+                // console.info('fo-sticky-note.js: watch: activateTrigger: this.$refs.markdownNote = ')
+                // console.info(this.$refs.markdownNote)
+
+                this.titleSetViewMode();
+
+                // this.$refs.markdownNote.style.visibility = 'visible'
+                // this.menuOnMouseEnter()
+
+            }, 200);
+
         }
     },
 
@@ -17653,18 +17194,6 @@ var foStickyNoteMerged = {
             setTimeout(() => { 
                 this.$refs.colorButton.style.backgroundColor = this.buttonHoverColor;
             }, 100);
-        },
-
-        componentOnResize(e) {
-            // console.info('fo-sticky-note: componentOnResize(): Fired!  e = ')
-            // console.info(e)
-
-            let parentElement = this.$refs.vueOuterDiv.parentElement;
-
-            // console.info('fo-sticky-note: componentOnResize(): parentElement = ')
-            // console.info(parentElement)
-
-            this.resizeElements();
         },
 
         closeOnMouseLeave() {
@@ -17707,6 +17236,12 @@ var foStickyNoteMerged = {
                     requestAnimationFrame(fade);
                 }
             })();
+        },
+
+        handleResize() {
+            // console.info('fo-sticky-note.js: handleResize(): Fired!')
+            this.resizeElements();
+
         },
 
         initializeHtmlStyles() {
@@ -17821,7 +17356,7 @@ var foStickyNoteMerged = {
                 crbs.position        = 'absolute';
                 crbs.height          = roundButtonHeight;
                 crbs.width           = roundButtonWidth;
-                crbs.top             = '1px';
+                crbs.top             = '0';
                 crbs.right           = colorButtonRight;
                 crbs.border          = '0';
                 crbs.outline         = 'none';
@@ -17846,7 +17381,7 @@ var foStickyNoteMerged = {
                 clbs.position        = 'absolute';
                 clbs.height          = roundButtonHeight;
                 clbs.width           = roundButtonWidth;
-                clbs.top             = '1px';
+                clbs.top             = '0';
                 clbs.right           = closeButtonOffset;
                 clbs.border          = '0';
                 clbs.outline         = 'none';
@@ -17873,28 +17408,21 @@ var foStickyNoteMerged = {
             let mds = this.$refs.markdownDiv.style;
                 mds.backgroundColor = this.backgroundColor;
                 mds.top = this.markdownTop;
-                mds.position = 'absolute';
-                mds.width = '100%';
+                // console.info('fo-sticky-note.js: initializeMarkdownStyles(): Setting mds.display = flex ')
+                mds.display = 'flex';
+                mds.flexDirection = 'column';
+                mds.flex = 1;
                 mds.zIndex = 0;
 
-            let fmns = this.foMarkdownNote.style;
+            // console.info('fo-sticky-note.js: initializeMarkdownStyles(): this.$refs = ')
+            // console.info(this.$refs)
+                    
+            let fmns = this.$refs.markdownNote.$el.style;
                 fmns.position = 'absolute';
                 fmns.width = '100%';
                 fmns.zIndex = 0;
 
         },
-
-        // initializeResizeObserver() {
-
-        //     // console.info('fo-sticky-note.es6.js: initializeResizeObservers(): this.$refs.vueOuterDiv = ')
-        //     // console.info(this.$refs.vueOuterDiv)
-
-        //     let outerDivResizeObserver = document.getElementById('outer-div-resize-observer')
-        //     outerDivResizeObserver.style.position = 'relative'
-
-        //     let parentResizeObserver = document.getElementById('parent-resize-observer')
-        //     parentResizeObserver.style.position = 'relative'
-        // },
 
         initializeTitleStyles() {
             let tds = this.$refs.titleDiv.style;
@@ -17937,6 +17465,9 @@ var foStickyNoteMerged = {
             let ods = this.$refs.vueOuterDiv.style;
                 // position relative here allows the use of position absolute with descendents.
                 ods.position = 'relative';
+                ods.display = 'flex';
+                ods.flexDirection = 'column';
+                ods.flex = 1;
 
             // console.info('fo-sticky-note: initializeVueOuterDivStyles(): End')
         },
@@ -17955,6 +17486,13 @@ var foStickyNoteMerged = {
 
         menuOnMouseEnter() {
             // console.info('fo-sticky-note.js: menuOnMouseEnter(): Fired')
+
+            // TODO: Whatever is happening here makes the markdown note preview finally appear.
+            // First verify that this is true.
+            // Then determine exactly which command causes the markdown note preview to finally appear.
+            // Then do whatever that is at the right time in fo-gridstack-organizer.
+
+
             this.titleSetViewMode();
             this.$refs.menuButton.style.backgroundColor = this.buttonHoverColor;
             this.$refs.menuButtonIcon.style.opacity = this.iconOpacityActive;
@@ -17993,10 +17531,32 @@ var foStickyNoteMerged = {
         },
 
         resizeElements() {
+            // console.info('fo-sticky-note.js: resizeElements(): Start')
+
             // Since we can't use position: absolute for vueOuterDiv, we can't automatically resize its height
             // using height: 100%. So, before doing anything else, set its height to match that of its immediate parent.
 
             let parentElement = this.$refs.vueOuterDiv.parentElement;
+
+            // It might not have a parent element, for example, if the template is rendered as an
+            // off-document element.  See https://css-tricks.com/creating-vue-js-component-instances-programmatically/.
+            // If there is no parent element, there is no need to resize anything, so abort.
+
+            // console.info('fo-sticky-note.js: resizeElements(): parentElement = ')
+            // console.info(parentElement)
+
+            if (!parentElement) {
+                console.warn('fo-sticky-note.js: resizeElements(): No parent element found, aborting');
+                return
+            }
+
+            // The first time we are able to reference the parent element, initialize its resize listener.
+
+            if (this.useParentResizeListener && (!this.parentHasResizeListener)) {
+                lib_1(parentElement, this.handleResize);
+                this.parentHasResizeListener = true;
+            }
+
             let parentElementHeight = window.getComputedStyle(parentElement).getPropertyValue('height');
 
             // console.info('fo-sticky-note: resizeElements(): parentElementHeight = ' + parentElementHeight)
@@ -18041,7 +17601,11 @@ var foStickyNoteMerged = {
             let tds = this.$refs.titleDiv.style;
                 tds.minHeight = titleMinHeight;
 
-            let fmns = this.foMarkdownNote.style;  // $refs doesn't work here, for some reason.
+
+            // console.info('fo-sticky-note.js: resizeElements(): this.$refs = ')
+            // console.info(this.$refs)
+
+            let fmns = this.$refs.markdownNote.$el.style;  // $refs doesn't work here, for some reason.
                 fmns.top = markdownNoteTop;
                 fmns.height = markdownDivHeight;
 
@@ -18052,6 +17616,9 @@ var foStickyNoteMerged = {
                 tis.minWidth  = titleWidth;
                 tis.maxWidth  = titleWidth;
 
+            // TODO: fo-markdown-note isn't displaying properly.  
+            // Try using this.$nextTick(function () {  }.
+            // If that doesn't work, try giving fo-markdown-note a trigger prop.
         },
 
         setColors() {

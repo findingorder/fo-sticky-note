@@ -1,6 +1,6 @@
 {
   "name": "fo-sticky-note",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "main": "fo-sticky-note-bundle.js",
   "dependencies": {

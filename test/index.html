@@ -87,15 +87,15 @@
             <div class="grid-stack-item-content"
                 v-on:keydown='gsiContentOnKeyDown($event)'
                 >
-                <fo-sticky-note v-bind:id='dataobject.stickyNote.id' 
-                    v-bind:background-color='dataobject.stickyNote.backgroundColor'
-                    v-bind:color='dataobject.stickyNote.color'
-                    v-bind:font-family='dataobject.stickyNote.fontFamily'
-                    v-bind:font-size='dataobject.stickyNote.fontSize'
-                    v-bind:line-height='dataobject.stickyNote.lineHeight'
-                    v-bind:menu-is-pinned='dataobject.stickyNote.menuIsPinned'
-                    v-bind:note='dataobject.stickyNote.note' 
-                    v-bind:note-title='dataobject.stickyNote.noteTitle'
+                <fo-sticky-note v-bind:id='dataobject.stickyNoteProps.id' 
+                    v-bind:background-color='dataobject.stickyNoteProps.backgroundColor'
+                    v-bind:color='dataobject.stickyNoteProps.color'
+                    v-bind:font-family='dataobject.stickyNoteProps.fontFamily'
+                    v-bind:font-size='dataobject.stickyNoteProps.fontSize'
+                    v-bind:line-height='dataobject.stickyNoteProps.lineHeight'
+                    v-bind:menu-is-pinned='dataobject.stickyNoteProps.menuIsPinned'
+                    v-bind:note='dataobject.stickyNoteProps.note' 
+                    v-bind:note-title='dataobject.stickyNoteProps.noteTitle'
                     
                     v-on:color-button-click='handleSnColorButtonClick($event)'
                     v-on:color-button-unclick='handleSnColorButtonUnclick($event)'
@@ -104,6 +104,7 @@
                     v-on:title-change='handleSnTitleChange($event)'
                     v-on:blur='handleSnBlur($event)'
                     v-on:keydown='stickyNoteOnKeyDown($event)'
+                    use-parent-resize-listener=false
                     >
                 </fo-sticky-note>
             </div>

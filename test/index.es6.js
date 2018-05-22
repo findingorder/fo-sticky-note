@@ -52,10 +52,6 @@ let gridstackItemComponent = Vue.component('gridstackitem', {
         var grid = $('.grid-stack').data('gridstack');
         // console.info(grid);
 
-        // Obtain the element id associated with this VueJS component.
-
-        // console.info($(this.$el).attr('id'));
-
         // Ask Gridstack to remove the widget that contains this component's element.
 
         grid.removeWidget(this.$el);
@@ -154,13 +150,14 @@ var vueModel = new Vue({
         appOnKeyDown(e) {
             // console.info('index.es6.js: appOnKeyDown(): Fired!; e = ' + e)
         },
+
         colorPickerNoteOnKeyDown(e) {
             // console.info('index.es6.js: colorPickerOnKeyDown(): Fired!; e = ' + e)
         },
+
         gsiOnKeyDown(e) {
             // console.info('index.es6.js: gsiOnKeyDown(): Fired!; e = ' + e)
         },
-
 
         gridStackOnKeyDown(e) {
             // console.info('index.es6.js: gridStackOnKeyDown(): Fired!; e = ' + e)
@@ -176,7 +173,7 @@ var vueModel = new Vue({
             // of the model object.
 
             this.dataObjects.push(newDataObject)
-            this.dataObjectsDict[newDataObject.stickyNote.id] = newDataObject
+            this.dataObjectsDict[newDataObject.stickyNoteProps.id] = newDataObject
 
             // Wait until vue has completely rendered the new component.
 
@@ -201,49 +198,54 @@ var vueModel = new Vue({
 
             });
         },
+
         enableGrid() {
             // Standard way of invoking Gridstack.  Set some options and call the
             // gridstack() method of a jQuery control.
 
             var options = {
-                verticalMargin: 10,
+                // verticalMargin: 10,
                 resizable: {handles: 'se, s, sw'}
             };
 
             $('.grid-stack').gridstack(options);
         },
+
         handleColorChange(e) {
             // console.info('index.es6.js: handleColorChange(): Fired!; e = ' + e)
             // console.info('index.es6.js: handleColorChange(): this.colorPickerNoteId = ' + this.colorPickerNoteId)
 
             // Apply the selected color to the sticky note.
 
-            // The fo-sticky-note's backgroundColor prop is bound to dataobject.stickyNote.backgroundColor.
+            // The fo-sticky-note's backgroundColor prop is bound to dataobject.stickyNoteProps.backgroundColor.
             // So if we change that value in our bound data, it will update the note's color.
 
             let dataObjectToUpdate = this.dataObjectsDict[this.colorPickerNoteId]
 
-            // console.info('index.es6.js: handleColorChange(): Before: dataObjectToUpdate.stickyNote.backgroundColor = ')
-            // console.info(dataObjectToUpdate.stickyNote.backgroundColor)
+            // console.info('index.es6.js: handleColorChange(): Before: dataObjectToUpdate.stickyNoteProps.backgroundColor = ')
+            // console.info(dataObjectToUpdate.stickyNoteProps.backgroundColor)
 
-            dataObjectToUpdate.stickyNote.backgroundColor = e
+            dataObjectToUpdate.stickyNoteProps.backgroundColor = e
 
-            // console.info('index.es6.js: handleColorChange(): After: dataObjectToUpdate.stickyNote.backgroundColor = ')
-            // console.info(dataObjectToUpdate.stickyNote.backgroundColor)
+            // console.info('index.es6.js: handleColorChange(): After: dataObjectToUpdate.stickyNoteProps.backgroundColor = ')
+            // console.info(dataObjectToUpdate.stickyNoteProps.backgroundColor)
 
             this.hideColorPicker()
 
         },
+
         handleGiBlur(e) {
             if (this.isColorPickerOpen) {
                 this.hideColorPicker()
             }
         },
+
         handleGiCloseButtonClick(noteId) {
             // console.info('index.es6.js: handleGiCloseButtonClick(): Heard a click from note with ID = ' + noteId)
             let elementToClose = document.getElementById(noteId)
             elementToClose.parentNode.parentNode.parentNode.removeChild(elementToClose.parentNode.parentNode)
         },
+
         handleGiColorButtonClick(clickedElement) {
             // console.info('index.es6.js: handleGiColorButtonClick(): Fired!')
             // console.info('index.es6.js: handleGiColorButtonClick(): Heard a click from this color button:')
@@ -272,22 +274,27 @@ var vueModel = new Vue({
             this.isColorPickerOpen = true
 
         },
+
         handleGiColorButtonUnclick(clickedElement) {
             // console.info('index.es6.js: handleGiColorButtonUNClick(): Fired!')
             this.hideColorPicker()
         },
+
         handleGiMenuOnMouseLeave(e) {
             // console.info('index.es6.js: handleMenuOnMouseLeave(): Fired! e = ')
             // console.info(e)            
         },
+
         handleGiNoteChange(newNote) {
             // console.info('index.es6.js: handleNoteChange(): Fired! newNote = ')
             // console.info(newNote)
         },
+
         handleGiTitleChange(newTitle) {
             // console.info('index.es6.js: handleTitleChange(): Fired! newTitle = ')
             // console.info(newTitle)
         },
+        
         hideColorPicker() {
             let cps = this.colorPicker.style
                 cps.top = '-1000px'
@@ -295,11 +302,13 @@ var vueModel = new Vue({
                 cps.visibility = 'hidden'
             this.isColorPickerOpen = false
         },
+
         humanizeURL(url) {
             return url
                 .replace(/^https?:\/\//, '')
                 .replace(/\/$/, '')
         },
+
         removeWidget(widgetToRemove) {
             // console.info("parent remove: " + widgetToRemove.id);
             // console.info('removeWidget: ' + widgetToRemove.id);
@@ -337,14 +346,14 @@ function getStickyNoteDataObject() {
     let numberOfWords = Math.floor(Math.random() * 50) + 50
     let numberOfTitleWords = Math.floor(Math.random() * 5) + 5
 
-    dataObjectToReturn.stickyNote.id = guid()
-    dataObjectToReturn.stickyNote.note = loremIpsum.generate(numberOfWords)
-    dataObjectToReturn.stickyNote.noteTitle = loremIpsum.generate(numberOfTitleWords)
-    dataObjectToReturn.stickyNote.backgroundColor = randomColor()
-
-
-    // console.info('index.es6.js: getStickyNoteDataObject(): dataObjectToReturn.stickyNote =')
-    // console.info(dataObjectToReturn.stickyNote)
+    dataObjectToReturn.stickyNoteProps.id = guid()
+    dataObjectToReturn.stickyNoteProps.note = loremIpsum.generate(numberOfWords)
+    dataObjectToReturn.stickyNoteProps.noteTitle = loremIpsum.generate(numberOfTitleWords)
+    dataObjectToReturn.stickyNoteProps.backgroundColor = randomColor()
+    // dataObjectToReturn.stickyNoteProps.useParentResizeListener = false
+    
+    // console.info('index.es6.js: getStickyNoteDataObject(): dataObjectToReturn.stickyNoteProps =')
+    // console.info(dataObjectToReturn.stickyNoteProps)
     return dataObjectToReturn
 }
 
@@ -370,7 +379,7 @@ function StickyNoteDataObject() {
         minHeight: 1,
         maxHeight: 1
     },
-    this.stickyNote = { 
+    this.stickyNoteProps = { 
         id: null,
         noteTitle: null,
         note: null,

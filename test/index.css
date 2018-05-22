@@ -1,15 +1,54 @@
-.grid-stack-item-content {
-    background-color: peachpuff;
-    border: 0;
-    overflow-y: hidden !important;
+.grid-stack-item {
+    padding: 0;
+    margin: 0;
+
+    /* 
+    The following is required in order to make the fo-sticky-note resize to 100%
+    when resizing strictly in the vertical direction. 
+    */
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    flex: 1;
 }
 
-.note-container {
-    height: 100%;
-    width: 100%;
-    background-color: lavender;
+.grid-stack-item-content {
+    background-color: peachpuff;
+    padding: 0;
+    margin: 0;
+    margin-right: 20px !important;
     border: 0;
-    overflow-y: hidden;
+    /* left: 0px !important; */
+    overflow-y: hidden !important;
+
+    /* 
+    The following is required in order to make the fo-sticky-note resize to 100%
+    when resizing strictly in the vertical direction. 
+    */
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -moz-box-orient: vertical;
+    -moz-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    flex: 1; 
 }
 
 h1, h2, h3, h4, h5 {
