@@ -36,6 +36,8 @@ The following attributes can be included in an *\<fo-sticky-note\>* tag:
 - *id*&nbsp;&nbsp;&nbsp;Required; every *\<fo-sticky-note\>* instance must have a unique *id* value
 - *note*&nbsp;&nbsp;&nbsp;The initial contents of the note
 - *noteTitle*&nbsp;&nbsp;&nbsp;The note's title; this text appears in the shaded bar at the top of the note
+- *resizeTrigger*&nbsp;&nbsp;&nbsp;Used to trigger a resize by assigning a different value, such as a guid
+- *useParentResizeListener*&nbsp;&nbsp;&nbsp;Set to true (default) to cause fo-sticky-note to listen for and respond to a resize of its parent element; disable by setting to false
 
 Values for the following attributes are expressed using **CSS** syntax:
 
@@ -139,7 +141,6 @@ Like most open source projects, fo-sticky-note is based on the work of others.
 
 - [Vue.js](https://vuejs.org/) by [Evan You](https://github.com/yyx990803) and a host of [other contributors](https://vuejs.org/v2/guide/team.html)
 - [rollup.js](https://rollupjs.org) by [Rich Harris](https://github.com/Rich-Harris), [Lukas Taegert](https://github.com/lukastaegert), and a host of [other contributors](https://github.com/rollup/rollup/graphs/contributors)
-- [vue-resize](https://github.com/Akryum/vue-resize) by [Guillaume Chau](https://guillaume-chau.info/)
 - [jquery-autogrow-textarea](https://www.npmjs.com/package/jquery-autogrow-textarea) by [Bruno Sampaio](https://www.npmjs.com/~bensampaio)
 - [tinycolor](http://bgrins.github.io/TinyColor/) by [Brian Grinstead](https://briangrinstead.com/blog/) and many [other contributors](https://github.com/bgrins/TinyColor/graphs/contributors)
 - [vue-color](https://xiaokaike.github.io/vue-color/) by [Don/xiaokaike](https://github.com/xiaokaike) and many [other contributors](https://github.com/xiaokaike/vue-color/graphs/contributors) for the color picker used in the test application
